@@ -1,0 +1,9 @@
+.app_header {
+  grid-area: h;
+  background-color: steelblue;
+}
+
+.app_header img {
+  padding-left: 1%;
+  height: 50%;
+}
