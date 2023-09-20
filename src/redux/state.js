@@ -1,5 +1,7 @@
 const ADD_POST = 'ADD-POST';
 const UPDATE_POST_DATA = 'UPDATE-POST-DATA';
+const ADD_MESSAGE = 'ADD_MESSAGE';
+const UPDATE_MESSAGE_DATA = 'UPDATE_MESSAGE_DATA';
 
 let store = {
     _state: {
@@ -59,21 +61,6 @@ let store = {
         this._state.msgPage.newMsg = text;
         this._callSubscriber(this._state);//!!!
     },
-    addPost() {
-        let newPost = {
-            id: 3,
-            postMessage: this._state.profilePosts.newPostText,
-            likes: 5
-        };
-        this._state.profilePosts.posts.push(newPost);
-        this._state.profilePosts.newPostText = '';
-        this._callSubscriber(this._state);//!!!
-    },
-    updatePostData(text) {
-        this._state.profilePosts.newPostText = text;
-    
-        this._callSubscriber(this._state);//!!!
-    },
     subscribe(observer) {
         this._callSubscriber = observer;
     },
@@ -81,7 +68,7 @@ let store = {
 
     },
     dispatch(action) {
-        if (action.type === 'ADD-POST') {
+        if (action.type === ADD_POST) {
             let newPost = {
                 id: 3,
                 postMessage: this._state.profilePosts.newPostText,
@@ -90,10 +77,20 @@ let store = {
             this._state.profilePosts.posts.push(newPost);
             this._state.profilePosts.newPostText = '';
             this._callSubscriber(this._state);
-        } else if (action.type === 'UPDATE-POST-DATA') {
+        } else if (action.type === UPDATE_POST_DATA) {
             this._state.profilePosts.newPostText = action.text;
-    
             this._callSubscriber(this._state);
+        } else if (action.type === ADD_MESSAGE) {
+            let newMessage = {
+                id: 2,
+                message: this._state.msgPage.newMsg
+            };
+            this._state.msgPage.messages.push(newMessage);
+            this._state.msgPage.newMsg = '';
+            this._callSubscriber(this._state);//!!!
+        } else if (action.type === UPDATE_MESSAGE_DATA) {
+            this._state.msgPage.newMsg = action.text;
+            this._callSubscriber(this._state);//!!!
         }
     }
 }
@@ -108,6 +105,14 @@ export function updatePostActionCreator(text) {
         text: text
     };
     return action;
+}
+
+export function addMessageActionCreator() {
+    return {type: ADD_MESSAGE}
+}
+
+export function updateMessageActionCreator(text) {
+    return {type: UPDATE_MESSAGE_DATA, text: text}
 }
 
 export default store;
