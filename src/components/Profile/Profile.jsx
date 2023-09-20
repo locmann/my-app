@@ -2,6 +2,7 @@ import React from 'react';
 import styles from './Profile.module.css';
 import MyPosts from './MyPosts/MyPosts';
 import ProfileInfo from './ProfileInfo/ProfileInfo';
+import MyPostsContainer from './MyPosts/MyPostsContainer';
 
 function Profile(props) {
     
@@ -9,8 +10,7 @@ function Profile(props) {
         <div>
             Content
             <ProfileInfo />
-            <MyPosts text={props.profile.newPostText}
-                posts={props.profile.posts} dispatch={props.dispatch} />
+            <MyPostsContainer store={props.store} />
         </div>
     );
 }
