@@ -1,7 +1,5 @@
-const ADD_POST = 'ADD-POST';
-const UPDATE_POST_DATA = 'UPDATE-POST-DATA';
-const ADD_MESSAGE = 'ADD_MESSAGE';
-const UPDATE_MESSAGE_DATA = 'UPDATE_MESSAGE_DATA';
+import profileReducer from "./profileReducer";
+import dialogsReducer from "./dialogsReducer";
 
 let store = {
     _state: {
@@ -48,19 +46,6 @@ let store = {
     getNewPostText() {
         return this._state.profilePosts.newPostText;
     },
-    addMessage() {
-        let newMessage = {
-            id: 2,
-            message: this._state.msgPage.newMsg
-        };
-        this._state.msgPage.messages.push(newMessage);
-        this._state.msgPage.newMsg = '';
-        this._callSubscriber(this._state);//!!!
-    },
-    updateMessageData(text) {
-        this._state.msgPage.newMsg = text;
-        this._callSubscriber(this._state);//!!!
-    },
     subscribe(observer) {
         this._callSubscriber = observer;
     },
@@ -68,51 +53,10 @@ let store = {
 
     },
     dispatch(action) {
-        if (action.type === ADD_POST) {
-            let newPost = {
-                id: 3,
-                postMessage: this._state.profilePosts.newPostText,
-                likes: 5
-            };
-            this._state.profilePosts.posts.push(newPost);
-            this._state.profilePosts.newPostText = '';
-            this._callSubscriber(this._state);
-        } else if (action.type === UPDATE_POST_DATA) {
-            this._state.profilePosts.newPostText = action.text;
-            this._callSubscriber(this._state);
-        } else if (action.type === ADD_MESSAGE) {
-            let newMessage = {
-                id: 2,
-                message: this._state.msgPage.newMsg
-            };
-            this._state.msgPage.messages.push(newMessage);
-            this._state.msgPage.newMsg = '';
-            this._callSubscriber(this._state);//!!!
-        } else if (action.type === UPDATE_MESSAGE_DATA) {
-            this._state.msgPage.newMsg = action.text;
-            this._callSubscriber(this._state);//!!!
-        }
+        this._state.profilePosts = profileReducer(this._state.profilePosts, action);
+        this._state.msgPage = dialogsReducer(this._state.msgPage, action);
+        this._callSubscriber(this._state);
     }
-}
-
-export function addPostActionCreator() {
-    return {type: ADD_POST}
-}
-
-export function updatePostActionCreator(text) {
-    let action = {
-        type: UPDATE_POST_DATA,
-        text: text
-    };
-    return action;
-}
-
-export function addMessageActionCreator() {
-    return {type: ADD_MESSAGE}
-}
-
-export function updateMessageActionCreator(text) {
-    return {type: UPDATE_MESSAGE_DATA, text: text}
 }
 
 export default store;
