@@ -14,7 +14,7 @@ function Dialogs(props) {
         props.updateMessageData(text);
     }
     let newDialogsData = props.dialogs.dialogs
-        .map(mem => <DialogItem name={mem.name} id={mem.id} />)
+        .map(mem => <DialogItem name={mem.name} id={mem.id} key={mem.id} />)
 
     let newMessages = props.dialogs.messages
         .map(msg => <Message data={msg.message} />)
