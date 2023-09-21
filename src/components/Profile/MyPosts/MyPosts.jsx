@@ -12,14 +12,16 @@ function MyPosts(props) {
         let text = newPostElement.current.value;
         props.updateNewPostText(text);
     }
-    let newPost = props.posts.map(p => <Post message={p.postMessage} likes={p.likes}/>)
+    let newPost = props.profilePosts.posts.map(p => <Post message={p.postMessage} likes={p.likes}/>)
     return (
         <div>
             <div className={styles.item}>
                 my post
             </div>
             <div>
-                <textarea ref={newPostElement} onChange={onPostChange} value={props.text}></textarea>
+                <textarea ref={newPostElement} onChange={onPostChange} value={props.profilePosts.newPostText}>
+
+                </textarea>
                 <button onClick={onAddPost}>Add post</button>
             </div>
             

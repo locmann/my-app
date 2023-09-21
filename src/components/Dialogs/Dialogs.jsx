@@ -13,10 +13,10 @@ function Dialogs(props) {
         let text = newMessage.current.value;
         props.updateMessageData(text);
     }
-    let newDialogsData = props.dialogs
+    let newDialogsData = props.dialogs.dialogs
         .map(mem => <DialogItem name={mem.name} id={mem.id} />)
 
-    let newMessages = props.messages
+    let newMessages = props.dialogs.messages
         .map(msg => <Message data={msg.message} />)
     return (
         <div className={styles.dialogs}>
@@ -31,7 +31,7 @@ function Dialogs(props) {
             </div>
             <div>
                 <textarea ref={newMessage} onChange={onMessageChange}
-                value={props.newMsg}>
+                value={props.dialogs.newMsg}>
 
                 </textarea>
                 <button onClick={addMessage}>add msg</button>
