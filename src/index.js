@@ -4,15 +4,17 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import StoreContext from './StoreContext';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 function renderEntireTree(state) {
 
   root.render(
-    <React.StrictMode>
-      <App /* state={state} dispatch={store.dispatch.bind(store)} */ store={store}
-      />
-    </React.StrictMode>
+    <StoreContext.Provider value={store}>
+      <React.StrictMode>
+        <App />
+      </React.StrictMode>
+    </StoreContext.Provider>
   );
 }
 

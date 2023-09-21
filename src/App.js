@@ -5,7 +5,7 @@ import Profile from './components/Profile/Profile';
 import { Routes, Route, BrowserRouter } from 'react-router-dom';
 import DialogsContainer from './components/Dialogs/DialogsContainer';
 
-function App(props) {
+function App() {
 
   
   return (
@@ -15,8 +15,8 @@ function App(props) {
         <Navbar />
         <div className="App-wrapper-content">
           <Routes>
-            <Route path="/dialogs/" element={<DialogsContainer store={props.store} />} />
-            <Route path="/profile/" element={<Profile store={props.store} />} />
+            <Route path="/dialogs/" element={<DialogsContainer />} />
+            <Route path="/profile/" element={<Profile />} />
 
           </Routes>
         </div>
