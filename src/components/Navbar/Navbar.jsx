@@ -6,19 +6,22 @@ function Navbar() {
     return (
         <nav className={styles.app_nav}>
             <div className={styles.item}>
-                <NavLink to='/profile' /* className={({ isActive }) => (isActive ? styles.active : 'inactive')} */>Profile</NavLink>
+                <NavLink to='/profile' >Profile</NavLink>
             </div>
             <div className={styles.item}>
-                <NavLink to='/dialogs' /* className={({ isActive }) => (isActive ? styles.active : 'inactive')} */>Messages</NavLink>
+                <NavLink to='/dialogs' >Messages</NavLink>
             </div>
             <div className={styles.item}>
-                <NavLink to='/news' /* className={({ isActive }) => (isActive ? styles.active : 'inactive')} */>News</NavLink>
+                <NavLink to='/news' >News</NavLink>
             </div>
             <div className={styles.item}>
-                <NavLink to='/music' /* className={({ isActive }) => (isActive ? styles.active : 'inactive')} */>Music</NavLink>
+                <NavLink to='/music' >Music</NavLink>
             </div>
             <div className={styles.item}>
-                <NavLink to='/settings' /* className={({ isActive }) => (isActive ? styles.active : 'inactive')} */>Settings</NavLink>
+                <NavLink to='/settings' >Settings</NavLink>
+            </div>
+            <div className={styles.item}>
+                <NavLink to='/users' >Users</NavLink>
             </div>
         </nav>
     );
