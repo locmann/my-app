@@ -3,54 +3,57 @@ import styles from './Users.module.css'
 import axios from "axios";
 import userPhoto from '../../assets/images/user.png'
 
+class Users extends React.Component {
+    
+    constructor(props) {
+        
+        super(props)
+        
 
-function Users(props) {
-    if (props.users.length === 0) {
         axios.get('https://social-network.samuraijs.com/api/1.0/users').then(
             response => {
-                props.setUsers(response.data.items)
+                this.props.setUsers(response.data.items)
             }
         )
+        alert('qwe')
     }
-    return (
-        <div>
-            users
+
+
+    render() {
+        return (
             <div>
-                {props.users.map(u => <div>
-                    <span>
-                        <div>
-                            <img src={u.photos.small != null ? u.photos.small : userPhoto}
-                                className={styles.ava} />
-                        </div>
-                        <div>
-                            {u.followed ? <button onClick={() => { props.unfollow(u.id) }}>unfollow</button>
-                                : <button onClick={() => { props.follow(u.id) }}>follow</button>}
-                        </div>
-                    </span>
-                    <span>
+
+                users
+                <div>
+                    {this.props.users.map(u => <div>
                         <span>
                             <div>
-                                {u.name}
+                                <img src={u.photos.small != null ? u.photos.small : userPhoto}
+                                    className={styles.ava} />
                             </div>
                             <div>
-                                {u.status}
+                                {u.followed ?
+                                    <button onClick={() => { this.props.unfollow(u.id) }}>unfollow</button>
+                                    : <button onClick={() => { this.props.follow(u.id) }}>follow</button>}
                             </div>
                         </span>
-                        {/* <span>
-                            <div>
-                                {u.location.city}
-                            </div>
-                            <div>
-                                {u.location.country}
-                            </div>
-                        </span> */}
+                        <span>
+                            <span>
+                                <div>
+                                    {u.name}
+                                </div>
+                                <div>
+                                    {u.status}
+                                </div>
+                            </span>
 
-                    </span>
-                </div>)}
+
+                        </span>
+                    </div>)}
+                </div>
             </div>
-        </div>
-
-    )
+        )
+    }
 }
 
 export default Users;
