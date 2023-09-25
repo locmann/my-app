@@ -7,8 +7,6 @@ import DialogsContainer from './components/Dialogs/DialogsContainer';
 import UsersContainer from './components/Users/UsersContainer';
 
 function App() {
-
-  
   return (
     <BrowserRouter>
       <div className="App-wrapper">
