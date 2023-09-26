@@ -3,12 +3,14 @@ const UNFOLLOW = 'UNFOLLOW';
 const SET_USERS = 'SET_USERS';
 const SET_CURRENT_PAGE = 'SET_CURRENT_PAGE';
 const SET_TOTAL_USERS_COUNT = 'SET_TOTAL_USERS_COUNT';
+const SET_FETCHING_PRELOADER = 'SET_FETCHING_PRELOADER';
 
 let initialState = {
     users: [],
     pageSize: 4,
     totalUsersCount: 0,
-    currentPage: 1
+    currentPage: 1,
+    isFetching: false
 }
 
 function usersReducer(state = initialState, action) {
@@ -54,29 +56,39 @@ function usersReducer(state = initialState, action) {
                 totalUsersCount: action.totalUsersCount
             }
         }
+        case (SET_FETCHING_PRELOADER): {
+            return {
+                ...state,
+                isFetching: action.isFetching
+            }
+        }
         default:
             return state;
     }
 }
 
-export function followAC(userID) {
+export function follow(userID) {
     return { type: FOLLOW, userID };
 }
 
-export function unfollowAC(userID) {
+export function unfollow(userID) {
     return {type: UNFOLLOW, userID};
 }
 
-export function setUsersAC(users) {
+export function setUsers(users) {
     return {type: SET_USERS, users};
 }
 
-export function setCurPageAC(currentPage) {
+export function setCurPage(currentPage) {
     return {type: SET_CURRENT_PAGE, currentPage};
 }
 
-export function setTotalUsersCountAC(number) {
+export function setTotalUsersCount(number) {
     return {type: SET_TOTAL_USERS_COUNT, totalUsersCount: number}
+}
+
+export function setFetchingPreloader(isFetching) {
+    return {type: SET_FETCHING_PRELOADER, isFetching: isFetching}
 }
 
 export default usersReducer;
