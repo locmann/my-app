@@ -1,7 +1,12 @@
 import React from 'react';
 import styles from './ProfileInfo.module.css';
+import Preloader from '../../common/Preloader';
 
-function ProfileInfo() {
+function ProfileInfo(props) {
+    if (!props.profile) {
+        return <Preloader />
+    }
+
     return (
         <div className={styles.info}>
             
@@ -9,7 +14,7 @@ function ProfileInfo() {
                 <img src="back.jpg"></img>
             </div>
             <div className={styles.pic}>
-                <img src="ava.jpg"></img>
+                <img src={props.profile.photos.small}></img>
             </div>
         </div>
     );
