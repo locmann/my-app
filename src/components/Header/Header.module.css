@@ -7,3 +7,10 @@
   padding-left: 1%;
   height: 50%;
 }
+
+.loginBlock {
+  float: right;
+}
+.loginBlock a {
+  color: azure;
+}
