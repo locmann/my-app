@@ -7,6 +7,7 @@ function Header(props) {
         <header className={styles.app_header}>
             <img src="favicon.ico" />
             <div className={styles.loginBlock}>
+                <div>qwe</div>
                 {props.isAuth ? props.login : <NavLink to={'/login'}>Login</NavLink>}
                 
             </div>
