@@ -1,20 +1,20 @@
 import React from 'react';
 import Header from './Header';
-import axios from "axios";
 import { connect } from 'react-redux';
-import { setAuthUserData, setFetchingPreloader } from '../../redux/authReducer';
+import { authThunk, setAuthUserData, setFetchingPreloader } from '../../redux/authReducer';
 import { usersAPI } from '../../api/api';
 class HeaderContainer extends React.Component {
     componentDidMount() {
         //this.props.setFetchingPreloader(true)
-        usersAPI.getAuth().then(
+        this.props.authThunk()
+        /* usersAPI.getAuth().then(
                 data => {
                     if (data.resultCode === 0) {
                         let {id, login, email} = data.data
                         this.props.setAuthUserData(id, login, email)
                     }
                 }
-            )
+            ) */
     }
     render() {
         return (
@@ -31,4 +31,4 @@ function mapStateToProps(state) {
     }
 }
 
-export default connect(mapStateToProps, { setAuthUserData })(HeaderContainer);
+export default connect(mapStateToProps, { setAuthUserData, authThunk })(HeaderContainer);
