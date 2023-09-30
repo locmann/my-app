@@ -1,6 +1,5 @@
 import React from 'react';
 import Profile from './Profile';
-import axios from 'axios';
 import { connect } from 'react-redux';
 import { setUserProfile } from '../../redux/profileReducer';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
@@ -44,7 +43,8 @@ function withRouter(Component) {
 
 function mapStateToProps(state) {
     return {
-        profile: state.profilePosts.profile
+        profile: state.profilePosts.profile,
+        isAuth: state.auth.isAuth
     }
 }
 
