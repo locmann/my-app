@@ -23,7 +23,7 @@ function Dialogs(props) {
     <Message data={msg.message} />
   ));
 
-  if (!props.isAuth) return <Navigate to="/login"/>
+
   return (
     <div className={styles.dialogs}>
       <div className={styles.dialogs_item}>{newDialogsData}</div>

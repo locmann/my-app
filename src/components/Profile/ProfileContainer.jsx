@@ -4,6 +4,8 @@ import { connect } from 'react-redux';
 import { setUserProfile } from '../../redux/profileReducer';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { profileThunk } from '../../redux/profileReducer';
+import { withAuthRedirect } from '../../hoc/withAuthRedirect';
+import { compose } from 'redux';
 
 class ProfileContainer extends React.Component {
     componentDidMount() {
@@ -12,13 +14,6 @@ class ProfileContainer extends React.Component {
             profileId = 2
         }
         this.props.profileThunk(profileId)
-        /* axios.get(
-            `https://social-network.samuraijs.com/api/1.0/profile/` + profileId)
-            .then(
-                response => {
-                    this.props.setUserProfile(response.data);
-                }
-            ) */
     }
     
     render() {
@@ -41,6 +36,7 @@ function withRouter(Component) {
     return ComponentWithRouterProp;
 }
 
+
 function mapStateToProps(state) {
     return {
         profile: state.profilePosts.profile,
@@ -48,4 +44,8 @@ function mapStateToProps(state) {
     }
 }
 
-export default connect(mapStateToProps, {setUserProfile, profileThunk})(withRouter(ProfileContainer));
+export default compose(
+    connect(mapStateToProps, {setUserProfile, profileThunk}),
+    withRouter,
+    withAuthRedirect
+)(ProfileContainer);

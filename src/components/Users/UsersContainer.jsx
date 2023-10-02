@@ -4,7 +4,6 @@ import {
   setUsers,
   setCurPage,
   setTotalUsersCount,
-
   getUsers,
   getUsersOnChangedPage,
   followThunk,
@@ -12,6 +11,8 @@ import {
 } from "../../redux/usersReducer";
 import Users from "./Users";
 import Preloader from "../common/Preloader";
+import { compose } from "redux";
+import { withAuthRedirect } from "../../hoc/withAuthRedirect";
 
 class UsersContainer extends React.Component {
   componentDidMount() {
@@ -34,6 +35,7 @@ class UsersContainer extends React.Component {
           unfollow={this.props.unfollowThunk}
           follow={this.props.followThunk}
           followingInProgress={this.props.followingInProgress}
+          isAuth={this.props.isAuth}
         />
       </>
     );
@@ -52,12 +54,15 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps, {
-  followThunk,
-  unfollowThunk,
-  setUsers,
-  setCurPage,
-  setTotalUsersCount,
-  getUsers,
-  getUsersOnChangedPage,
-})(UsersContainer);
+export default compose(
+    connect(mapStateToProps, {
+      followThunk,
+      unfollowThunk,
+      setUsers,
+      setCurPage,
+      setTotalUsersCount,
+      getUsers,
+      getUsersOnChangedPage,
+    }),
+    withAuthRedirect
+  )(UsersContainer);
