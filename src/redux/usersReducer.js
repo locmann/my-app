@@ -131,8 +131,8 @@ export function getUsersOnChangedPage(pageNumber, pageSize) {
 export function followThunk(userId) {
   return (dispatch) => {
     dispatch(toggleFollowingProgress(true, userId));
-    usersAPI.followPost(userId).then((data) => {
-      if (data.resultCode == 0) {
+    usersAPI.followPost(userId).then((response) => {
+      if (response.data.resultCode == 0) {
         dispatch(follow(userId));
       }
       dispatch(toggleFollowingProgress(false, userId));
@@ -141,15 +141,15 @@ export function followThunk(userId) {
 }
 
 export function unfollowThunk(userId) {
-    return (dispatch) => {
-      dispatch(toggleFollowingProgress(true, userId));
-      usersAPI.followDelete(userId).then((data) => {
-        if (data.resultCode == 0) {
-          dispatch(unfollow(userId));
-        }
-        dispatch(toggleFollowingProgress(false, userId));
-      });
-    };
+  return (dispatch) => {
+    dispatch(toggleFollowingProgress(true, userId));
+    usersAPI.followDelete(userId).then((response) => {
+      if (response.data.resultCode == 0) {
+        dispatch(unfollow(userId));
+      }
+      dispatch(toggleFollowingProgress(false, userId));
+    });
+  };
 }
 
 export default usersReducer;
