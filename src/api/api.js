@@ -25,7 +25,7 @@ export const usersAPI = {
     ) /* .then((response) => response.data) */;
   },
   getAuth() {
-    return instance.get(`auth/me`).then((response) => response.data);
+    return instance.get(`auth/me`);
   },
   setProfile(profileId) {
     console.warn("old version");

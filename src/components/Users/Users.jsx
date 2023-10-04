@@ -9,7 +9,8 @@ function Users(props) {
   for (let i = 1; i <= pagesCount; i++) {
     pages.push(i);
   }
-  if (!props.isAuth) return <Navigate to="/login" />
+  console.log(props.isAuth);
+  if (!props.isAuth) return <Navigate to="/login" />;
   return (
     <div>
       <div>
@@ -60,7 +61,7 @@ function Users(props) {
                       (id) => id === u.id
                     )}
                     onClick={() => {
-                        props.unfollow(u.id)
+                      props.unfollow(u.id);
                     }}
                   >
                     unfollow

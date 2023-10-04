@@ -33,9 +33,9 @@ export function setFetchingPreloader(isFetching) {
 
 export function authThunk() {
   return (dispatch) => {
-    usersAPI.getAuth().then((data) => {
-      if (data.resultCode === 0) {
-        let { id, login, email } = data.data;
+    usersAPI.getAuth().then((response) => {
+      if (response.data.resultCode === 0) {
+        let { id, login, email } = response.data.data;
         dispatch(setAuthUserData(id, login, email));
       }
     });
