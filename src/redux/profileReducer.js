@@ -19,11 +19,8 @@ function profileReducer(state = initialState, action) {
     case ADD_POST: {
       return {
         ...state,
-        newPostText: "",
-        posts: [
-          ...state.posts,
-          { id: 3, postMessage: state.newPostText, likes: 5 },
-        ],
+        newPostText: action.text,
+        posts: [...state.posts, { id: 3, postMessage: action.text, likes: 5 }],
       };
     }
     case UPDATE_POST_DATA: {
@@ -49,8 +46,8 @@ function profileReducer(state = initialState, action) {
   }
 }
 
-export function addPostActionCreator() {
-  return { type: ADD_POST };
+export function addPostActionCreator(text) {
+  return { type: ADD_POST, text };
 }
 
 export function updatePostActionCreator(text) {

@@ -15,14 +15,10 @@ export const usersAPI = {
       .then((response) => response.data);
   },
   followDelete(id) {
-    return instance.delete(
-      `follow/${id}`
-    ) /* .then((response) => response.data) */;
+    return instance.delete(`follow/${id}`);
   },
   followPost(id) {
-    return instance.post(
-      `follow/${id}`
-    ) /* .then((response) => response.data) */;
+    return instance.post(`follow/${id}`);
   },
   getAuth() {
     return instance.get(`auth/me`);
@@ -31,13 +27,14 @@ export const usersAPI = {
     console.warn("old version");
     return profileAPI.setProfile(profileId);
   },
+  loginPost(obj) {
+    return instance.post(`auth/login`, obj);
+  },
 };
 
 export const profileAPI = {
   setProfile(profileId) {
-    //debugger;
     return instance.get(`profile/${profileId}`);
-    /* .then((response) => response.data) */
   },
   getStatus(userId) {
     return instance.get(`profile/status/${userId}`);
