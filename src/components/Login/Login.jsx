@@ -42,7 +42,7 @@ function LoginForm() {
         {...register("password", { required: true })}
       />
       <div>
-        {errors.exampleRequired && (
+        {errors.password && (
           <span className={styles.err}>This field is required</span>
         )}
       </div>
