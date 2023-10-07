@@ -50,19 +50,19 @@ function mapStateToProps(state) {
     currentPage: state.usersPage.currentPage,
     isFetching: state.usersPage.isFetching,
     followingInProgress: state.usersPage.followingInProgress,
-    isAuth: state.auth.isAuth
+    isAuth: state.auth.isAuth,
   };
 }
 
 export default compose(
-    connect(mapStateToProps, {
-      followThunk,
-      unfollowThunk,
-      setUsers,
-      setCurPage,
-      setTotalUsersCount,
-      getUsers,
-      getUsersOnChangedPage,
-    }),
-    withAuthRedirect
-  )(UsersContainer);
+  connect(mapStateToProps, {
+    followThunk,
+    unfollowThunk,
+    setUsers,
+    setCurPage,
+    setTotalUsersCount,
+    getUsers,
+    getUsersOnChangedPage,
+  })
+  //withAuthRedirect
+)(UsersContainer);

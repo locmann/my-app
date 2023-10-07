@@ -43,7 +43,7 @@ export const setErrorAC = (error) => ({ type: SET_ERROR, error });
 
 export function authThunk() {
   return (dispatch) => {
-    usersAPI.getAuth().then((response) => {
+    return usersAPI.getAuth().then((response) => {
       if (response.data.resultCode === 0) {
         let { id, login, email } = response.data.data;
         dispatch(setAuthUserData(id, login, email, true));
