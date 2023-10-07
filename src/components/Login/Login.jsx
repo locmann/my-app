@@ -5,6 +5,7 @@ import { usersAPI } from "../../api/api";
 import { connect } from "react-redux";
 import { loginThunk } from "../../redux/authReducer";
 import { Navigate } from "react-router-dom";
+import { useState } from "react";
 
 function Login(props) {
   const onSubmit = (formData) => {
@@ -18,7 +19,7 @@ function Login(props) {
       ) : (
         <>
           <h1>LOGIN</h1>
-          <LoginForm onSubmit={onSubmit} />
+          <LoginForm onSubmit={onSubmit} er={props.error} />
         </>
       )}
     </>
@@ -32,6 +33,7 @@ function LoginForm(props) {
     formState: { errors },
     reset,
   } = useForm();
+
   return (
     <form onSubmit={handleSubmit(props.onSubmit)}>
       <input placeholder="Email" {...register("email", { required: true })} />
@@ -53,11 +55,16 @@ function LoginForm(props) {
       <div>
         <input type="checkbox" {...register("rememberMe")} /> Remember me
       </div>
+
+      {props.er.length > 0 && <div className={styles.err}>{props.er}</div>}
       <input value="Login" type="submit" />
     </form>
   );
 }
 
-const mapStateToProps = (state) => ({ isAuth: state.auth.isAuth });
+const mapStateToProps = (state) => ({
+  isAuth: state.auth.isAuth,
+  error: state.auth.error,
+});
 
 export default connect(mapStateToProps, { loginThunk })(Login);

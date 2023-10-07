@@ -1,6 +1,7 @@
 import { usersAPI } from "../api/api";
 const SET_USER_DATA = "SET_USER_DATA";
 const SET_FETCHING_PRELOADER = "SET_FETCHING_PRELOADER";
+const SET_ERROR = "SET_ERROR";
 
 let initialState = {
   id: null,
@@ -8,6 +9,7 @@ let initialState = {
   login: null,
   isFetching: false,
   isAuth: false,
+  error: "",
 };
 
 function authReducer(state = initialState, action) {
@@ -17,6 +19,12 @@ function authReducer(state = initialState, action) {
         ...state,
         ...action.data,
         //isAuth: true,
+      };
+    }
+    case SET_ERROR: {
+      return {
+        ...state,
+        error: action.error,
       };
     }
     default:
@@ -30,6 +38,8 @@ export function setAuthUserData(id, email, login, isAuth) {
 export function setFetchingPreloader(isFetching) {
   return { type: SET_FETCHING_PRELOADER, isFetching: isFetching };
 }
+
+export const setErrorAC = (error) => ({ type: SET_ERROR, error });
 
 export function authThunk() {
   return (dispatch) => {
@@ -48,6 +58,8 @@ export const loginThunk =
     usersAPI.loginPost(email, password, rememberMe).then((response) => {
       if (response.data.resultCode === 0) {
         dispatch(authThunk());
+      } else {
+        dispatch(setErrorAC(response.data.messages[0]));
       }
     });
   };
