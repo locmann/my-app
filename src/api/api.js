@@ -27,8 +27,11 @@ export const usersAPI = {
     console.warn("old version");
     return profileAPI.setProfile(profileId);
   },
-  loginPost(obj) {
-    return instance.post(`auth/login`, obj);
+  loginPost(email, password, rememberMe = false) {
+    return instance.post(`auth/login`, { email, password, rememberMe });
+  },
+  logoutDelete() {
+    return instance.delete(`auth/login`);
   },
 };
 

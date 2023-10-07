@@ -2,42 +2,46 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import styles from "./Login.module.css";
 import { usersAPI } from "../../api/api";
+import { connect } from "react-redux";
+import { loginThunk } from "../../redux/authReducer";
+import { Navigate } from "react-router-dom";
 
 function Login(props) {
+  const onSubmit = (formData) => {
+    props.loginThunk(formData.email, formData.password, formData.rememberMe);
+  };
+
   return (
     <>
-      <h1>LOGIN</h1>
-      <LoginForm />
+      {props.isAuth ? (
+        <Navigate to="/profile" />
+      ) : (
+        <>
+          <h1>LOGIN</h1>
+          <LoginForm onSubmit={onSubmit} />
+        </>
+      )}
     </>
   );
 }
 
-function LoginForm() {
+function LoginForm(props) {
   const {
     register,
     handleSubmit,
-    watch,
     formState: { errors },
     reset,
   } = useForm();
-  const onSubmit = (data) => {
-    console.log(data);
-    console.log(data.login);
-    console.log(data.password);
-    usersAPI
-      .loginPost({ login: data.login, password: data.password })
-      .then((response) => {});
-    reset();
-  };
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <input placeholder="Login" {...register("login", { required: true })} />
+    <form onSubmit={handleSubmit(props.onSubmit)}>
+      <input placeholder="Email" {...register("email", { required: true })} />
       <div>
-        {errors.login && (
+        {errors.email && (
           <span className={styles.err}>This field is required</span>
         )}
       </div>
       <input
+        type="password"
         placeholder="Password"
         {...register("password", { required: true })}
       />
@@ -54,4 +58,6 @@ function LoginForm() {
   );
 }
 
-export default Login;
+const mapStateToProps = (state) => ({ isAuth: state.auth.isAuth });
+
+export default connect(mapStateToProps, { loginThunk })(Login);
