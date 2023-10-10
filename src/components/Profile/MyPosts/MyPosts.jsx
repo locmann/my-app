@@ -19,11 +19,12 @@ function MyPosts(props) {
     control,
   } = useForm();
   const onSubmit = (data) => {
-    console.log(data.newPostText);
+    //console.log(data.newPostText);
     addPost(data.newPostText);
     reset();
   };
-
+  console.log("RENDER");
+  console.log(props);
   return (
     <div>
       <div className={styles.item}>my post</div>
