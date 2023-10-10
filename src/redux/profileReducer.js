@@ -3,6 +3,7 @@ const ADD_POST = "ADD-POST";
 const UPDATE_POST_DATA = "UPDATE-POST-DATA";
 const SET_USER_PROFILE = "SET_USER_PROFILE";
 const SET_PROFILE_STATUS = "SET_PROFILE_STATUS";
+const SAVE_PHOTOS = "SAVE_PHOTOS";
 
 let initialState = {
   posts: [
@@ -12,6 +13,7 @@ let initialState = {
   newPostText: "qwe",
   profile: null,
   status: "",
+  photos: null,
 };
 
 function profileReducer(state = initialState, action) {
@@ -41,9 +43,19 @@ function profileReducer(state = initialState, action) {
         status: action.status,
       };
     }
+    case SAVE_PHOTOS: {
+      return {
+        ...state,
+        profile: { ...state.profile, photos: action.photos },
+      };
+    }
     default:
       return state;
   }
+}
+
+export function setProfilePhoto(photos) {
+  return { type: SAVE_PHOTOS, photos };
 }
 
 export function addPostActionCreator(text) {
@@ -97,6 +109,14 @@ export function profileThunk(profileId) {
     usersAPI.setProfile(profileId).then((response) => {
       dispatch(setUserProfile(response.data));
       //console.log(data);//
+    });
+  };
+}
+
+export function savePhoto(file) {
+  return (dispatch) => {
+    profileAPI.setPhoto(file).then((response) => {
+      dispatch(setProfilePhoto(response.data.data.photos));
     });
   };
 }
