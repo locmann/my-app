@@ -1,17 +1,17 @@
 {
   "files": {
     "main.css": "/my-app/static/css/main.6cd18a82.css",
-    "main.js": "/my-app/static/js/main.fc66e679.js",
+    "main.js": "/my-app/static/js/main.61c68ca6.js",
     "static/js/787.28cb0dcd.chunk.js": "/my-app/static/js/787.28cb0dcd.chunk.js",
     "static/media/Triplex.gif": "/my-app/static/media/Triplex.a7027f8de7ec95cabe84.gif",
     "static/media/user.png": "/my-app/static/media/user.44ea40a3eb8dd7fed2a9.png",
     "index.html": "/my-app/index.html",
     "main.6cd18a82.css.map": "/my-app/static/css/main.6cd18a82.css.map",
-    "main.fc66e679.js.map": "/my-app/static/js/main.fc66e679.js.map",
+    "main.61c68ca6.js.map": "/my-app/static/js/main.61c68ca6.js.map",
     "787.28cb0dcd.chunk.js.map": "/my-app/static/js/787.28cb0dcd.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.6cd18a82.css",
-    "static/js/main.fc66e679.js"
+    "static/js/main.61c68ca6.js"
   ]
 }
