@@ -4,6 +4,8 @@ const UPDATE_POST_DATA = "UPDATE-POST-DATA";
 const SET_USER_PROFILE = "SET_USER_PROFILE";
 const SET_PROFILE_STATUS = "SET_PROFILE_STATUS";
 const SAVE_PHOTOS = "SAVE_PHOTOS";
+const UPDATE_USER_PROFILE = "UPDATE_USER_PROFILE";
+const UPDATE_ERROR_USER_PROFILE = "UPDATE_ERROR_USER_PROFILE";
 
 let initialState = {
   posts: [
@@ -14,6 +16,7 @@ let initialState = {
   profile: null,
   status: "",
   photos: null,
+  err: "",
 };
 
 function profileReducer(state = initialState, action) {
@@ -49,11 +52,35 @@ function profileReducer(state = initialState, action) {
         profile: { ...state.profile, photos: action.photos },
       };
     }
+    case UPDATE_USER_PROFILE: {
+      return {
+        ...state,
+        profile: {
+          ...state.profile,
+          ...action.profile,
+          contacts: { ...state.profile.contacts, ...action.profile.contacts },
+          //...state.profile,
+          //contacts: { ...action.profile.contacts },
+        },
+      };
+    }
+    case UPDATE_ERROR_USER_PROFILE: {
+      return {
+        ...state,
+        err: action.err,
+      };
+    }
     default:
       return state;
   }
 }
 
+export function updateProfileAC(profile) {
+  return { type: UPDATE_USER_PROFILE, profile };
+}
+export function updateErrorProfileAC(err) {
+  return { type: UPDATE_ERROR_USER_PROFILE, err };
+}
 export function setProfilePhoto(photos) {
   return { type: SAVE_PHOTOS, photos };
 }
@@ -88,7 +115,6 @@ export function getStatus(userId) {
   return (dispatch) => {
     profileAPI.getStatus(userId).then((response) => {
       dispatch(setStatusProfile(response.data));
-      //console.log(data);//
     });
   };
 }
@@ -99,7 +125,6 @@ export function updateStatus(status) {
       if (response.data.resultCode === 0) {
         dispatch(setStatusProfile(status));
       }
-      //console.log(data);//
     });
   };
 }
@@ -108,7 +133,6 @@ export function profileThunk(profileId) {
   return (dispatch) => {
     usersAPI.setProfile(profileId).then((response) => {
       dispatch(setUserProfile(response.data));
-      //console.log(data);//
     });
   };
 }
@@ -117,6 +141,15 @@ export function savePhoto(file) {
   return (dispatch) => {
     profileAPI.setPhoto(file).then((response) => {
       dispatch(setProfilePhoto(response.data.data.photos));
+    });
+  };
+}
+
+export function updateUserProfile(profile) {
+  return (dispatch) => {
+    profileAPI.updateProfile(profile).then((response) => {
+      if (response.data.resultCode === 0) dispatch(updateProfileAC(profile));
+      else dispatch(updateErrorProfileAC(response.data.messages[0]));
     });
   };
 }

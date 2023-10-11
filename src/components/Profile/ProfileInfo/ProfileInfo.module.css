@@ -9,3 +9,19 @@
 .ava {
   max-width: 150px;
 }
+
+.description {
+  border: solid 1px;
+}
+
+ul {
+  margin: auto;
+}
+
+.contact {
+  padding-left: 10px;
+}
+
+.editButton {
+  right: 0;
+}

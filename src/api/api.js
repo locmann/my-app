@@ -54,4 +54,7 @@ export const profileAPI = {
       },
     });
   },
+  updateProfile(profile) {
+    return instance.put("/profile", profile);
+  },
 };

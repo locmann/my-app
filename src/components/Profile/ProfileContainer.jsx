@@ -8,6 +8,7 @@ import {
   getStatus,
   updateStatus,
   savePhoto,
+  updateUserProfile,
 } from "../../redux/profileReducer";
 import { withAuthRedirect } from "../../hoc/withAuthRedirect";
 import { compose } from "redux";
@@ -40,6 +41,7 @@ class ProfileContainer extends React.Component {
         updateStatus={this.props.updateStatus}
         isOwner={!this.props.router.params.userId}
         savePhoto={this.props.savePhoto}
+        updateUserProfile={this.props.updateUserProfile}
       />
     );
   }
@@ -71,6 +73,7 @@ export default compose(
     profileThunk,
     updateStatus,
     savePhoto,
+    updateUserProfile,
   }),
   withRouter,
   withAuthRedirect
