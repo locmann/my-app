@@ -9,7 +9,12 @@ import { useState } from "react";
 
 function Login(props) {
   const onSubmit = (formData) => {
-    props.loginThunk(formData.email, formData.password, formData.rememberMe);
+    props.loginThunk(
+      formData.email,
+      formData.password,
+      formData.rememberMe,
+      formData.captcha
+    );
   };
 
   return (
@@ -19,7 +24,11 @@ function Login(props) {
       ) : (
         <>
           <h1>LOGIN</h1>
-          <LoginForm onSubmit={onSubmit} er={props.error} />
+          <LoginForm
+            onSubmit={onSubmit}
+            er={props.error}
+            captcha={props.captcha}
+          />
         </>
       )}
     </>
@@ -57,6 +66,12 @@ function LoginForm(props) {
       </div>
 
       {props.er.length > 0 && <div className={styles.err}>{props.er}</div>}
+      {props.captcha && <img src={props.captcha} />}
+      {props.captcha && (
+        <div>
+          <input {...register("captcha", { required: true })} />
+        </div>
+      )}
       <input value="Login" type="submit" />
     </form>
   );
@@ -65,6 +80,7 @@ function LoginForm(props) {
 const mapStateToProps = (state) => ({
   isAuth: state.auth.isAuth,
   error: state.auth.error,
+  captcha: state.auth.captcha,
 });
 
 export default connect(mapStateToProps, { loginThunk })(Login);

@@ -27,11 +27,19 @@ export const usersAPI = {
     console.warn("old version");
     return profileAPI.setProfile(profileId);
   },
-  loginPost(email, password, rememberMe = false) {
-    return instance.post(`auth/login`, { email, password, rememberMe });
+  loginPost(email, password, rememberMe = false, captcha) {
+    return instance.post(`auth/login`, {
+      email,
+      password,
+      rememberMe,
+      captcha,
+    });
   },
   logoutDelete() {
     return instance.delete(`auth/login`);
+  },
+  getCaptcha() {
+    return instance.get(`security/get-captcha-url`);
   },
 };
 

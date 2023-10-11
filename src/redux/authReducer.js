@@ -2,6 +2,7 @@ import { usersAPI } from "../api/api";
 const SET_USER_DATA = "SET_USER_DATA";
 const SET_FETCHING_PRELOADER = "SET_FETCHING_PRELOADER";
 const SET_ERROR = "SET_ERROR";
+const GET_CAPTCHA = "GET_CAPTCHA";
 
 let initialState = {
   id: null,
@@ -10,6 +11,7 @@ let initialState = {
   isFetching: false,
   isAuth: false,
   error: "",
+  captcha: null,
 };
 
 function authReducer(state = initialState, action) {
@@ -27,12 +29,22 @@ function authReducer(state = initialState, action) {
         error: action.error,
       };
     }
+    case GET_CAPTCHA: {
+      return {
+        ...state,
+        captcha: action.captcha,
+      };
+    }
     default:
       return state;
   }
 }
 export function setAuthUserData(id, email, login, isAuth) {
   return { type: SET_USER_DATA, data: { id, email, login, isAuth } };
+}
+
+export function getCaptchaAC(captcha) {
+  return { type: GET_CAPTCHA, captcha };
 }
 
 export function setFetchingPreloader(isFetching) {
@@ -53,15 +65,20 @@ export function authThunk() {
 }
 
 export const loginThunk =
-  (email, password, rememberMe = false) =>
+  (email, password, rememberMe = false, captcha = null) =>
   (dispatch) => {
-    usersAPI.loginPost(email, password, rememberMe).then((response) => {
-      if (response.data.resultCode === 0) {
-        dispatch(authThunk());
-      } else {
-        dispatch(setErrorAC(response.data.messages[0]));
-      }
-    });
+    usersAPI
+      .loginPost(email, password, rememberMe, captcha)
+      .then((response) => {
+        if (response.data.resultCode === 0) {
+          dispatch(authThunk());
+        } else {
+          if (response.data.resultCode === 10) {
+            dispatch(getCaptchaUrl());
+          }
+          dispatch(setErrorAC(response.data.messages[0]));
+        }
+      });
   };
 
 export const logoutThunk = () => (dispatch) => {
@@ -69,6 +86,12 @@ export const logoutThunk = () => (dispatch) => {
     if (response.data.resultCode === 0) {
       dispatch(setAuthUserData(null, null, null, false));
     }
+  });
+};
+
+export const getCaptchaUrl = () => (dispatch) => {
+  usersAPI.getCaptcha().then((response) => {
+    dispatch(getCaptchaAC(response.data.url));
   });
 };
 
