@@ -8,7 +8,7 @@ import {
   getUsersOnChangedPage,
   followThunk,
   unfollowThunk,
-} from "../../redux/usersReducer";
+} from "../../redux/usersReducer.ts";
 import Users from "./Users";
 import Preloader from "../common/Preloader";
 import { compose } from "redux";

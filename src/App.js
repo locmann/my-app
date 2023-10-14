@@ -1,7 +1,7 @@
 import "./App.css";
 import React from "react";
 import Navbar from "./components/Navbar/Navbar";
-import { Routes, Route, HashRouter } from "react-router-dom";
+import { Routes, Route, BrowserRouter } from "react-router-dom";
 import DialogsContainer from "./components/Dialogs/DialogsContainer";
 import UsersContainer from "./components/Users/UsersContainer";
 import ProfileContainer from "./components/Profile/ProfileContainer";
@@ -10,7 +10,7 @@ import Login from "./components/Login/Login";
 import { connect } from "react-redux";
 import { useParams } from "react-router-dom";
 import { compose } from "redux";
-import { initialize } from "./redux/appReducer";
+import { initialize } from "./redux/appReducer.ts";
 import Preloader from "./components/common/Preloader";
 
 class App extends React.Component {
@@ -24,7 +24,7 @@ class App extends React.Component {
     if (!this.props.initialized) return <Preloader />;
 
     return (
-      <HashRouter /* basename={process.env.PUBLIC_URL} */>
+      <BrowserRouter /* basename={process.env.PUBLIC_URL} */>
         <div className="App-wrapper">
           <HeaderContainer />
           <Navbar />
@@ -37,7 +37,7 @@ class App extends React.Component {
             </Routes>
           </div>
         </div>
-      </HashRouter>
+      </BrowserRouter>
     );
   }
 }

@@ -1,5 +1,6 @@
+import { type } from "os";
 import { usersAPI } from "../api/api";
-
+import { UserType } from "../components/types/types";
 const FOLLOW = "FOLLOW";
 const UNFOLLOW = "UNFOLLOW";
 const SET_USERS = "SET_USERS";
@@ -9,15 +10,17 @@ const SET_FETCHING_PRELOADER = "SET_FETCHING_PRELOADER";
 const TOGGLE_IS_FOLLOWING_PROGRESS = "TOGGLE_IS_FOLLOWING_PROGRESS";
 
 let initialState = {
-  users: [],
+  users: [] as Array<UserType>,
   pageSize: 4,
   totalUsersCount: 0,
   currentPage: 1,
   isFetching: false,
-  followingInProgress: [],
+  followingInProgress: [] as Array<number>,
 };
 
-function usersReducer(state = initialState, action) {
+export type InitialStateType = typeof initialState;
+
+function usersReducer(state = initialState, action: any): InitialStateType {
   switch (action.type) {
     case FOLLOW: {
       return {
@@ -78,36 +81,75 @@ function usersReducer(state = initialState, action) {
   }
 }
 
-export function follow(userID) {
+type Follow = {
+  type: typeof FOLLOW;
+  userID: number;
+};
+
+export function follow(userID: number): Follow {
   return { type: FOLLOW, userID };
 }
-
-export function unfollow(userID) {
+type Unfollow = {
+  type: typeof UNFOLLOW;
+  userID: number;
+};
+export function unfollow(userID: number): Unfollow {
   return { type: UNFOLLOW, userID };
 }
 
-export function setUsers(users) {
+type SetUsers = {
+  type: typeof SET_USERS;
+  users: UserType;
+};
+
+export function setUsers(users: UserType): SetUsers {
   return { type: SET_USERS, users };
 }
 
-export function setCurPage(currentPage) {
+type SetCurPage = {
+  type: typeof SET_CURRENT_PAGE;
+  currentPage: number;
+};
+
+export function setCurPage(currentPage: number): SetCurPage {
   return { type: SET_CURRENT_PAGE, currentPage };
 }
 
-export function setTotalUsersCount(number) {
+type SetTotalUsersCount = {
+  type: typeof SET_TOTAL_USERS_COUNT;
+  totalUsersCount: number;
+};
+
+export function setTotalUsersCount(number: number): SetTotalUsersCount {
   return { type: SET_TOTAL_USERS_COUNT, totalUsersCount: number };
 }
 
-export function setFetchingPreloader(isFetching) {
+type SetFetchingPreloader = {
+  type: typeof SET_FETCHING_PRELOADER;
+  isFetching: boolean;
+};
+
+export function setFetchingPreloader(
+  isFetching: boolean
+): SetFetchingPreloader {
   return { type: SET_FETCHING_PRELOADER, isFetching: isFetching };
 }
 
-export function toggleFollowingProgress(isFetching, userId) {
+type ToggleFollowingProgress = {
+  type: typeof TOGGLE_IS_FOLLOWING_PROGRESS;
+  isFetching: boolean;
+  userId: number;
+};
+
+export function toggleFollowingProgress(
+  isFetching: boolean,
+  userId: number
+): ToggleFollowingProgress {
   return { type: TOGGLE_IS_FOLLOWING_PROGRESS, isFetching, userId };
 }
 
-export function getUsers(currentPage, pageSize) {
-  return (dispatch) => {
+export function getUsers(currentPage: number, pageSize: number) {
+  return (dispatch: any) => {
     dispatch(setFetchingPreloader(true));
     usersAPI.getUsers(currentPage, pageSize).then((data) => {
       dispatch(setUsers(data.items));
@@ -117,8 +159,8 @@ export function getUsers(currentPage, pageSize) {
   };
 }
 
-export function getUsersOnChangedPage(pageNumber, pageSize) {
-  return (dispatch) => {
+export function getUsersOnChangedPage(pageNumber: number, pageSize: number) {
+  return (dispatch: any) => {
     dispatch(setFetchingPreloader(true));
     dispatch(setCurPage(pageNumber));
     usersAPI.getUsers(pageNumber, pageSize).then((data) => {
@@ -128,8 +170,8 @@ export function getUsersOnChangedPage(pageNumber, pageSize) {
   };
 }
 
-export function followThunk(userId) {
-  return (dispatch) => {
+export function followThunk(userId: number) {
+  return (dispatch: any) => {
     dispatch(toggleFollowingProgress(true, userId));
     usersAPI.followPost(userId).then((response) => {
       if (response.data.resultCode == 0) {
@@ -140,8 +182,8 @@ export function followThunk(userId) {
   };
 }
 
-export function unfollowThunk(userId) {
-  return (dispatch) => {
+export function unfollowThunk(userId: number) {
+  return (dispatch: any) => {
     dispatch(toggleFollowingProgress(true, userId));
     usersAPI.followDelete(userId).then((response) => {
       if (response.data.resultCode == 0) {

@@ -1,7 +1,7 @@
 import React from "react";
 import Profile from "./Profile";
 import { connect } from "react-redux";
-import { setUserProfile } from "../../redux/profileReducer";
+import { setUserProfile } from "../../redux/profileReducer.ts";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import {
   profileThunk,
@@ -9,7 +9,7 @@ import {
   updateStatus,
   savePhoto,
   updateUserProfile,
-} from "../../redux/profileReducer";
+} from "../../redux/profileReducer.ts";
 import { withAuthRedirect } from "../../hoc/withAuthRedirect";
 import { compose } from "redux";
 

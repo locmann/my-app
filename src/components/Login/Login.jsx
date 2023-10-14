@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import styles from "./Login.module.css";
 import { usersAPI } from "../../api/api";
 import { connect } from "react-redux";
-import { loginThunk } from "../../redux/authReducer";
+import { loginThunk } from "../../redux/authReducer.ts";
 import { Navigate } from "react-router-dom";
 import { useState } from "react";
 
