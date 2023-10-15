@@ -33,6 +33,7 @@ class ProfileContainer extends React.Component {
   }
 
   render() {
+    //debugger;
     return (
       <Profile
         {...this.props}
@@ -59,6 +60,8 @@ function withRouter(Component) {
 }
 
 function mapStateToProps(state) {
+  console.log("mapstatetoprops");
+  console.log(state.profilePosts.profile);
   return {
     profile: state.profilePosts.profile,
     isAuth: state.auth.isAuth,

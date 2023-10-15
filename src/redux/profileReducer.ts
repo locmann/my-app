@@ -21,7 +21,7 @@ let initialState = {
     { id: 2, postMessage: "ti loh", likes: 10 },
   ] as Array<Post>,
   newPostText: "" as string,
-  profile: {} as ProfileType, //!!!!
+  profile: null as ProfileType | null, //!!!!
   status: "" as string,
   //photos: null,
   err: "" as string,
@@ -47,7 +47,8 @@ function profileReducer(state = initialState, action: any): InitialStateType {
     case SET_USER_PROFILE: {
       return {
         ...state,
-        profile: { ...action.profile, photos: { ...action.profile.photos } },
+        profile:
+          action.profile /* { ...action.profile, photos: { ...action.profile.photos } } */,
       };
     }
     case SET_PROFILE_STATUS: {
@@ -68,7 +69,9 @@ function profileReducer(state = initialState, action: any): InitialStateType {
         profile: {
           ...state.profile,
           ...action.profile,
-          contacts: { ...state.profile.contacts, ...action.profile.contacts },
+          contacts: {
+            /* ...state.profile.contacts, */ ...action.profile.contacts,
+          },
           //...state.profile,
           //contacts: { ...action.profile.contacts },
         },
@@ -139,7 +142,10 @@ type SetUserProfile = {
 };
 
 export function setUserProfile(profile: ProfileType): SetUserProfile {
-  debugger;
+  console.log("profile");
+
+  console.log(profile);
+
   return {
     type: SET_USER_PROFILE,
     profile,
@@ -178,7 +184,6 @@ export function updateStatus(status: string) {
 
 export function profileThunk(profileId: number) {
   return (dispatch: any) => {
-    debugger;
     usersAPI.setProfile(profileId).then((response) => {
       dispatch(setUserProfile(response.data));
     });

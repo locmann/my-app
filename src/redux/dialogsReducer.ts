@@ -39,6 +39,8 @@ function dialogsReducer(
   state: InitialStateType = startState,
   action: any
 ): InitialStateType {
+  console.log(action);
+
   switch (action.type) {
     case ADD_MESSAGE: {
       //let message: string = action.msg;
