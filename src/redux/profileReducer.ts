@@ -18,7 +18,7 @@ type Post = {
 let initialState = {
   posts: [
     { id: 1, postMessage: "hello", likes: 3 },
-    { id: 2, postMessage: "ti loh", likes: 10 },
+    { id: 2, postMessage: "hi", likes: 10 },
   ] as Array<Post>,
   newPostText: "" as string,
   profile: null as ProfileType | null, //!!!!
