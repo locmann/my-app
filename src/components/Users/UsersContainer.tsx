@@ -1,9 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
 import {
-  setUsers,
-  setCurPage,
-  setTotalUsersCount,
   getUsers,
   getUsersOnChangedPage,
   followThunk,

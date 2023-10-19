@@ -1,3 +1,4 @@
+import { ProfileType } from "./../components/types/types";
 import axios from "axios";
 
 const instance = axios.create({
@@ -8,32 +9,56 @@ const instance = axios.create({
   },
 });
 
+export enum StatusCode {
+  Success = 0,
+  Error = 1,
+  CaptchaIsRequired = 10,
+}
+
+type AuthMe = {
+  data: { id: number; email: string; login: string };
+  resultCode: StatusCode;
+  messages: Array<string>;
+};
+type AuthLogin = {
+  data: { id: number };
+  resultCode: StatusCode;
+  messages: Array<string>;
+};
+
 export const usersAPI = {
   getUsers(currentPage = 1, pageSize = 4) {
     return instance
       .get(`users?page=${currentPage}&count=${pageSize}`)
       .then((response) => response.data);
   },
-  followDelete(id) {
+  followDelete(id: number) {
     return instance.delete(`follow/${id}`);
   },
-  followPost(id) {
+  followPost(id: number) {
     return instance.post(`follow/${id}`);
   },
   getAuth() {
-    return instance.get(`auth/me`);
+    return instance.get<AuthMe>(`auth/me`).then((response) => response.data);
   },
-  setProfile(profileId) {
+  setProfile(profileId: number) {
     console.warn("old version");
     return profileAPI.setProfile(profileId);
   },
-  loginPost(email, password, rememberMe = false, captcha) {
-    return instance.post(`auth/login`, {
-      email,
-      password,
-      rememberMe,
-      captcha,
-    });
+  loginPost(
+    email: string,
+    password: string,
+    rememberMe = false,
+    captcha: string | null = null
+  ) {
+    return instance
+      .post<AuthLogin>(`auth/login`, {
+        email,
+        password,
+        rememberMe,
+        captcha,
+      })
+      .then((response) => response.data);
   },
   logoutDelete() {
     return instance.delete(`auth/login`);
@@ -44,16 +69,16 @@ export const usersAPI = {
 };
 
 export const profileAPI = {
-  setProfile(profileId) {
+  setProfile(profileId: number) {
     return instance.get(`profile/${profileId}`);
   },
-  getStatus(userId) {
+  getStatus(userId: number) {
     return instance.get(`profile/status/${userId}`);
   },
-  updateStatus(status) {
+  updateStatus(status: string) {
     return instance.put(`profile/status/`, { status: status });
   },
-  setPhoto(photoFile) {
+  setPhoto(photoFile: any) {
     const formData = new FormData();
     formData.append("image", photoFile);
     return instance.put(`profile/photo`, formData, {
@@ -62,7 +87,7 @@ export const profileAPI = {
       },
     });
   },
-  updateProfile(profile) {
+  updateProfile(profile: ProfileType) {
     return instance.put("/profile", profile);
   },
 };

@@ -1,5 +1,5 @@
 import { ThunkAction } from "redux-thunk";
-import { usersAPI } from "../api/api";
+import { StatusCode, usersAPI } from "../api/api";
 import { AppStateType } from "./reduxStore";
 const SET_USER_DATA = "SET_USER_DATA";
 const SET_FETCHING_PRELOADER = "SET_FETCHING_PRELOADER";
@@ -108,9 +108,9 @@ type ThunkType = ThunkAction<void, AppStateType, unknown, ActionType>;
 
 export function authThunk(): ThunkType {
   return (dispatch) => {
-    return usersAPI.getAuth().then((response) => {
-      if (response.data.resultCode === 0) {
-        let { id, login, email } = response.data.data;
+    return usersAPI.getAuth().then((data) => {
+      if (data.resultCode === StatusCode.Success) {
+        let { id, login, email } = data.data;
         dispatch(setAuthUserData(id, login, email, true));
       }
     });
@@ -125,18 +125,16 @@ export const loginThunk =
     captcha: string
   ): ThunkType =>
   (dispatch) => {
-    usersAPI
-      .loginPost(email, password, rememberMe, captcha)
-      .then((response) => {
-        if (response.data.resultCode === 0) {
-          dispatch(authThunk());
-        } else {
-          if (response.data.resultCode === 10) {
-            dispatch(getCaptchaUrl());
-          }
-          dispatch(setErrorAC(response.data.messages[0]));
+    usersAPI.loginPost(email, password, rememberMe, captcha).then((data) => {
+      if (data.resultCode === StatusCode.Success) {
+        dispatch(authThunk());
+      } else {
+        if (data.resultCode === StatusCode.CaptchaIsRequired) {
+          dispatch(getCaptchaUrl());
         }
-      });
+        dispatch(setErrorAC(data.messages[0]));
+      }
+    });
   };
 
 export const logoutThunk = (): ThunkType => (dispatch) => {
