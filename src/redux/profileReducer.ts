@@ -1,6 +1,8 @@
 import { type } from "os";
 import { profileAPI, usersAPI } from "../api/api";
 import { ProfileType, PhotosType } from "../components/types/types";
+import { ThunkAction } from "redux-thunk";
+import { AppStateType } from "./reduxStore";
 const ADD_POST = "ADD-POST";
 const UPDATE_POST_DATA = "UPDATE-POST-DATA";
 const SET_USER_PROFILE = "SET_USER_PROFILE";
@@ -29,7 +31,10 @@ let initialState = {
 
 export type InitialStateType = typeof initialState;
 
-function profileReducer(state = initialState, action: any): InitialStateType {
+function profileReducer(
+  state = initialState,
+  action: ActionType
+): InitialStateType {
   switch (action.type) {
     case ADD_POST: {
       return {
@@ -87,6 +92,15 @@ function profileReducer(state = initialState, action: any): InitialStateType {
       return state;
   }
 }
+
+type ActionType =
+  | UpdateProfileAC
+  | UpdateErrorProfileAC
+  | SetProfilePhoto
+  | AddPostActionCreator
+  | UpdatePostActionCreator
+  | SetUserProfile
+  | SetStatusProfile;
 
 type UpdateProfileAC = {
   type: typeof UPDATE_USER_PROFILE;
@@ -164,16 +178,18 @@ export function setStatusProfile(status: string): SetStatusProfile {
   };
 }
 
-export function getStatus(userId: number) {
-  return (dispatch: any) => {
+type ThunkType = ThunkAction<void, AppStateType, unknown, ActionType>;
+
+export function getStatus(userId: number): ThunkType {
+  return (dispatch) => {
     profileAPI.getStatus(userId).then((response) => {
       dispatch(setStatusProfile(response.data));
     });
   };
 }
 
-export function updateStatus(status: string) {
-  return (dispatch: any) => {
+export function updateStatus(status: string): ThunkType {
+  return (dispatch) => {
     profileAPI.updateStatus(status).then((response) => {
       if (response.data.resultCode === 0) {
         dispatch(setStatusProfile(status));
@@ -182,24 +198,24 @@ export function updateStatus(status: string) {
   };
 }
 
-export function profileThunk(profileId: number) {
-  return (dispatch: any) => {
+export function profileThunk(profileId: number): ThunkType {
+  return (dispatch) => {
     usersAPI.setProfile(profileId).then((response) => {
       dispatch(setUserProfile(response.data));
     });
   };
 }
 
-export function savePhoto(file: any) {
-  return (dispatch: any) => {
+export function savePhoto(file: any): ThunkType {
+  return (dispatch) => {
     profileAPI.setPhoto(file).then((response) => {
       dispatch(setProfilePhoto(response.data.data.photos));
     });
   };
 }
 
-export function updateUserProfile(profile: ProfileType) {
-  return (dispatch: any) => {
+export function updateUserProfile(profile: ProfileType): ThunkType {
+  return (dispatch) => {
     profileAPI.updateProfile(profile).then((response) => {
       if (response.data.resultCode === 0) dispatch(updateProfileAC(profile));
       else dispatch(updateErrorProfileAC(response.data.messages[0]));

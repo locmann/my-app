@@ -1,6 +1,8 @@
 import { type } from "os";
 import { usersAPI } from "../api/api";
 import { UserType } from "../components/types/types";
+import { ThunkAction } from "redux-thunk";
+import { AppStateType } from "./reduxStore";
 const FOLLOW = "FOLLOW";
 const UNFOLLOW = "UNFOLLOW";
 const SET_USERS = "SET_USERS";
@@ -20,7 +22,10 @@ let initialState = {
 
 export type InitialStateType = typeof initialState;
 
-function usersReducer(state = initialState, action: any): InitialStateType {
+function usersReducer(
+  state = initialState,
+  action: ActionType
+): InitialStateType {
   switch (action.type) {
     case FOLLOW: {
       return {
@@ -81,6 +86,15 @@ function usersReducer(state = initialState, action: any): InitialStateType {
   }
 }
 
+type ActionType =
+  | Follow
+  | Unfollow
+  | SetUsers
+  | SetCurPage
+  | SetTotalUsersCount
+  | SetFetchingPreloader
+  | ToggleFollowingProgress;
+
 type Follow = {
   type: typeof FOLLOW;
   userID: number;
@@ -99,10 +113,10 @@ export function unfollow(userID: number): Unfollow {
 
 type SetUsers = {
   type: typeof SET_USERS;
-  users: UserType;
+  users: Array<UserType>;
 };
 
-export function setUsers(users: UserType): SetUsers {
+export function setUsers(users: Array<UserType>): SetUsers {
   return { type: SET_USERS, users };
 }
 
@@ -148,8 +162,10 @@ export function toggleFollowingProgress(
   return { type: TOGGLE_IS_FOLLOWING_PROGRESS, isFetching, userId };
 }
 
-export function getUsers(currentPage: number, pageSize: number) {
-  return (dispatch: any) => {
+type ThunkType = ThunkAction<void, AppStateType, unknown, ActionType>;
+
+export function getUsers(currentPage: number, pageSize: number): ThunkType {
+  return (dispatch) => {
     dispatch(setFetchingPreloader(true));
     usersAPI.getUsers(currentPage, pageSize).then((data) => {
       dispatch(setUsers(data.items));
@@ -159,8 +175,11 @@ export function getUsers(currentPage: number, pageSize: number) {
   };
 }
 
-export function getUsersOnChangedPage(pageNumber: number, pageSize: number) {
-  return (dispatch: any) => {
+export function getUsersOnChangedPage(
+  pageNumber: number,
+  pageSize: number
+): ThunkType {
+  return (dispatch) => {
     dispatch(setFetchingPreloader(true));
     dispatch(setCurPage(pageNumber));
     usersAPI.getUsers(pageNumber, pageSize).then((data) => {
@@ -170,8 +189,8 @@ export function getUsersOnChangedPage(pageNumber: number, pageSize: number) {
   };
 }
 
-export function followThunk(userId: number) {
-  return (dispatch: any) => {
+export function followThunk(userId: number): ThunkType {
+  return (dispatch) => {
     dispatch(toggleFollowingProgress(true, userId));
     usersAPI.followPost(userId).then((response) => {
       if (response.data.resultCode == 0) {
@@ -182,8 +201,8 @@ export function followThunk(userId: number) {
   };
 }
 
-export function unfollowThunk(userId: number) {
-  return (dispatch: any) => {
+export function unfollowThunk(userId: number): ThunkType {
+  return (dispatch) => {
     dispatch(toggleFollowingProgress(true, userId));
     usersAPI.followDelete(userId).then((response) => {
       if (response.data.resultCode == 0) {

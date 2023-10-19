@@ -37,7 +37,7 @@ let startState: InitialStateType = {
 
 function dialogsReducer(
   state: InitialStateType = startState,
-  action: any
+  action: AddMessageActionType
 ): InitialStateType {
   console.log(action);
 

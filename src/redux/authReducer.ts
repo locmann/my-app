@@ -1,5 +1,6 @@
-import { type } from "os";
+import { ThunkAction } from "redux-thunk";
 import { usersAPI } from "../api/api";
+import { AppStateType } from "./reduxStore";
 const SET_USER_DATA = "SET_USER_DATA";
 const SET_FETCHING_PRELOADER = "SET_FETCHING_PRELOADER";
 const SET_ERROR = "SET_ERROR";
@@ -17,7 +18,10 @@ let initialState = {
 
 export type InitialStateType = typeof initialState;
 
-function authReducer(state = initialState, action: any): InitialStateType {
+function authReducer(
+  state = initialState,
+  action: ActionType
+): InitialStateType {
   switch (action.type) {
     case SET_USER_DATA: {
       return {
@@ -49,6 +53,12 @@ type MainUserData = {
   login: string | null;
   isAuth: boolean;
 };
+
+type ActionType =
+  | SetAuthUserData
+  | GetCaptchaAC
+  | SetFetchingPreloader
+  | SetErrorAC;
 
 type SetAuthUserData = {
   type: typeof SET_USER_DATA;
@@ -94,8 +104,10 @@ export const setErrorAC = (error: string): SetErrorAC => ({
   error,
 });
 
-export function authThunk() {
-  return (dispatch: any) => {
+type ThunkType = ThunkAction<void, AppStateType, unknown, ActionType>;
+
+export function authThunk(): ThunkType {
+  return (dispatch) => {
     return usersAPI.getAuth().then((response) => {
       if (response.data.resultCode === 0) {
         let { id, login, email } = response.data.data;
@@ -106,8 +118,13 @@ export function authThunk() {
 }
 
 export const loginThunk =
-  (email: string, password: string, rememberMe: boolean, captcha: string) =>
-  (dispatch: any) => {
+  (
+    email: string,
+    password: string,
+    rememberMe: boolean,
+    captcha: string
+  ): ThunkType =>
+  (dispatch) => {
     usersAPI
       .loginPost(email, password, rememberMe, captcha)
       .then((response) => {
@@ -122,7 +139,7 @@ export const loginThunk =
       });
   };
 
-export const logoutThunk = () => (dispatch: any) => {
+export const logoutThunk = (): ThunkType => (dispatch) => {
   usersAPI.logoutDelete().then((response) => {
     if (response.data.resultCode === 0) {
       dispatch(setAuthUserData(null, null, null, false));
@@ -130,7 +147,7 @@ export const logoutThunk = () => (dispatch: any) => {
   });
 };
 
-export const getCaptchaUrl = () => (dispatch: any) => {
+export const getCaptchaUrl = (): ThunkType => (dispatch) => {
   usersAPI.getCaptcha().then((response) => {
     dispatch(getCaptchaAC(response.data.url));
   });

@@ -1,5 +1,3 @@
-import { type } from "os";
-
 import { authThunk } from "./authReducer";
 const IS_INI = "IS_INI";
 
@@ -13,7 +11,7 @@ let initialState: InitialStateType = {
 
 function appReducer(
   state: InitialStateType = initialState,
-  action: any
+  action: setIniAC
 ): InitialStateType {
   switch (action.type) {
     case IS_INI: {
