@@ -1,15 +1,7 @@
-import { type } from "os";
-import { profileAPI, usersAPI } from "../api/api";
+import { profileAPI } from "../api/api";
 import { ProfileType, PhotosType } from "../components/types/types";
 import { ThunkAction } from "redux-thunk";
-import { AppStateType } from "./reduxStore";
-const ADD_POST = "ADD-POST";
-const UPDATE_POST_DATA = "UPDATE-POST-DATA";
-const SET_USER_PROFILE = "SET_USER_PROFILE";
-const SET_PROFILE_STATUS = "SET_PROFILE_STATUS";
-const SAVE_PHOTOS = "SAVE_PHOTOS";
-const UPDATE_USER_PROFILE = "UPDATE_USER_PROFILE";
-const UPDATE_ERROR_USER_PROFILE = "UPDATE_ERROR_USER_PROFILE";
+import { BaseThunkType, InferActionsTypes } from "./reduxStore";
 
 type Post = {
   id: number;
@@ -23,66 +15,60 @@ let initialState = {
     { id: 2, postMessage: "hi", likes: 10 },
   ] as Array<Post>,
   newPostText: "" as string,
-  profile: null as ProfileType | null, //!!!!
+  profile: null as ProfileType | null,
   status: "" as string,
-  //photos: null,
   err: "" as string,
 };
 
-export type InitialStateType = typeof initialState;
-
 function profileReducer(
   state = initialState,
-  action: ActionType
+  action: ActionsType
 ): InitialStateType {
   switch (action.type) {
-    case ADD_POST: {
+    case "ADD_POST": {
       return {
         ...state,
         newPostText: action.text,
         posts: [...state.posts, { id: 3, postMessage: action.text, likes: 5 }],
       };
     }
-    case UPDATE_POST_DATA: {
+    case "UPDATE_POST_DATA": {
       return {
         ...state,
         newPostText: action.text,
       };
     }
-    case SET_USER_PROFILE: {
+    case "SET_USER_PROFILE": {
       return {
         ...state,
-        profile:
-          action.profile /* { ...action.profile, photos: { ...action.profile.photos } } */,
+        profile: action.profile,
       };
     }
-    case SET_PROFILE_STATUS: {
+    case "SET_PROFILE_STATUS": {
       return {
         ...state,
         status: action.status,
       };
     }
-    case SAVE_PHOTOS: {
+    case "SAVE_PHOTOS": {
       return {
         ...state,
         profile: { ...state.profile, photos: action.photos } as ProfileType,
       };
     }
-    case UPDATE_USER_PROFILE: {
+    case "UPDATE_USER_PROFILE": {
       return {
         ...state,
         profile: {
           ...state.profile,
           ...action.profile,
           contacts: {
-            /* ...state.profile.contacts, */ ...action.profile.contacts,
+            ...action.profile.contacts,
           },
-          //...state.profile,
-          //contacts: { ...action.profile.contacts },
         },
       };
     }
-    case UPDATE_ERROR_USER_PROFILE: {
+    case "UPDATE_ERROR_USER_PROFILE": {
       return {
         ...state,
         err: action.err,
@@ -93,106 +79,52 @@ function profileReducer(
   }
 }
 
-type ActionType =
-  | UpdateProfileAC
-  | UpdateErrorProfileAC
-  | SetProfilePhoto
-  | AddPostActionCreator
-  | UpdatePostActionCreator
-  | SetUserProfile
-  | SetStatusProfile;
-
-type UpdateProfileAC = {
-  type: typeof UPDATE_USER_PROFILE;
-  profile: ProfileType;
+export const actions = {
+  updateProfileAC: (profile: ProfileType) => {
+    return { type: "UPDATE_USER_PROFILE", profile } as const;
+  },
+  updateErrorProfileAC: (err: string) => {
+    return { type: "UPDATE_ERROR_USER_PROFILE", err } as const;
+  },
+  setProfilePhoto: (photos: PhotosType) => {
+    return { type: "SAVE_PHOTOS", photos } as const;
+  },
+  addPostActionCreator: (text: string) => {
+    return { type: "ADD_POST", text } as const;
+  },
+  updatePostActionCreator: (text: string) => {
+    return {
+      type: "UPDATE_POST_DATA",
+      text,
+    } as const;
+  },
+  setUserProfile: (profile: ProfileType) => {
+    return {
+      type: "SET_USER_PROFILE",
+      profile,
+    } as const;
+  },
+  setStatusProfile: (status: string) => {
+    return {
+      type: "SET_PROFILE_STATUS",
+      status,
+    } as const;
+  },
 };
-
-export function updateProfileAC(profile: ProfileType): UpdateProfileAC {
-  return { type: UPDATE_USER_PROFILE, profile };
-}
-
-type UpdateErrorProfileAC = {
-  type: typeof UPDATE_ERROR_USER_PROFILE;
-  err: string;
-};
-
-export function updateErrorProfileAC(err: string): UpdateErrorProfileAC {
-  return { type: UPDATE_ERROR_USER_PROFILE, err };
-}
-
-type SetProfilePhoto = {
-  type: typeof SAVE_PHOTOS;
-  photos: PhotosType;
-};
-
-export function setProfilePhoto(photos: PhotosType): SetProfilePhoto {
-  return { type: SAVE_PHOTOS, photos };
-}
-
-type AddPostActionCreator = {
-  type: typeof ADD_POST;
-  text: string;
-};
-
-export function addPostActionCreator(text: string): AddPostActionCreator {
-  return { type: ADD_POST, text };
-}
-
-type UpdatePostActionCreator = {
-  type: typeof UPDATE_POST_DATA;
-  text: string;
-};
-
-export function updatePostActionCreator(text: string): UpdatePostActionCreator {
-  return {
-    type: UPDATE_POST_DATA,
-    text,
-  };
-}
-
-type SetUserProfile = {
-  type: typeof SET_USER_PROFILE;
-  profile: ProfileType;
-};
-
-export function setUserProfile(profile: ProfileType): SetUserProfile {
-  console.log("profile");
-
-  console.log(profile);
-
-  return {
-    type: SET_USER_PROFILE,
-    profile,
-  };
-}
-
-type SetStatusProfile = {
-  type: typeof SET_PROFILE_STATUS;
-  status: string;
-};
-
-export function setStatusProfile(status: string): SetStatusProfile {
-  return {
-    type: SET_PROFILE_STATUS,
-    status,
-  };
-}
-
-type ThunkType = ThunkAction<void, AppStateType, unknown, ActionType>;
 
 export function getStatus(userId: number): ThunkType {
   return (dispatch) => {
-    profileAPI.getStatus(userId).then((response) => {
-      dispatch(setStatusProfile(response.data));
+    profileAPI.getStatus(userId).then((data) => {
+      dispatch(actions.setStatusProfile(data));
     });
   };
 }
 
 export function updateStatus(status: string): ThunkType {
   return (dispatch) => {
-    profileAPI.updateStatus(status).then((response) => {
-      if (response.data.resultCode === 0) {
-        dispatch(setStatusProfile(status));
+    profileAPI.updateStatus(status).then((data) => {
+      if (data.resultCode === 0) {
+        dispatch(actions.setStatusProfile(status));
       }
     });
   };
@@ -200,27 +132,31 @@ export function updateStatus(status: string): ThunkType {
 
 export function profileThunk(profileId: number): ThunkType {
   return (dispatch) => {
-    usersAPI.setProfile(profileId).then((response) => {
-      dispatch(setUserProfile(response.data));
+    profileAPI.setProfile(profileId).then((data) => {
+      dispatch(actions.setUserProfile(data));
     });
   };
 }
 
-export function savePhoto(file: any): ThunkType {
+export function savePhoto(file: File): ThunkType {
   return (dispatch) => {
-    profileAPI.setPhoto(file).then((response) => {
-      dispatch(setProfilePhoto(response.data.data.photos));
+    profileAPI.setPhoto(file).then((data) => {
+      dispatch(actions.setProfilePhoto(data.data.photos));
     });
   };
 }
 
 export function updateUserProfile(profile: ProfileType): ThunkType {
   return (dispatch) => {
-    profileAPI.updateProfile(profile).then((response) => {
-      if (response.data.resultCode === 0) dispatch(updateProfileAC(profile));
-      else dispatch(updateErrorProfileAC(response.data.messages[0]));
+    profileAPI.updateProfile(profile).then((data) => {
+      if (data.resultCode === 0) dispatch(actions.updateProfileAC(profile));
+      else dispatch(actions.updateErrorProfileAC(data.messages[0]));
     });
   };
 }
 
 export default profileReducer;
+
+export type InitialStateType = typeof initialState;
+type ActionsType = InferActionsTypes<typeof actions>;
+type ThunkType = BaseThunkType<ActionsType>;

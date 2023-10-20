@@ -1,20 +1,20 @@
 import { authThunk } from "./authReducer";
-const IS_INI = "IS_INI";
+import { InferActionsTypes } from "./reduxStore";
 
-export type InitialStateType = {
-  initialized: boolean;
-};
+export type InitialStateType = typeof initialState;
 
-let initialState: InitialStateType = {
+type ActionsType = InferActionsTypes<typeof actions>;
+
+let initialState = {
   initialized: false,
 };
 
 function appReducer(
   state: InitialStateType = initialState,
-  action: setIniAC
+  action: ActionsType
 ): InitialStateType {
   switch (action.type) {
-    case IS_INI: {
+    case "IS_INI": {
       return {
         ...state,
         initialized: true,
@@ -25,17 +25,14 @@ function appReducer(
   }
 }
 
-type setIniAC = {
-  type: typeof IS_INI;
+export const actions = {
+  setIni: () => {
+    return { type: "IS_INI" } as const;
+  },
 };
-
-export function setIni(): setIniAC {
-  return { type: IS_INI };
-}
-
 export const initialize = () => (dispatch: any) => {
   let promise = dispatch(authThunk());
-  promise.then(() => dispatch(setIni()));
+  promise.then(() => dispatch(actions.setIni()));
 };
 
 export default appReducer;

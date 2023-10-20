@@ -1,5 +1,13 @@
-import { ProfileType } from "./../components/types/types";
+import { PhotosType, ProfileType } from "./../components/types/types";
 import axios from "axios";
+import {
+  AuthLogin,
+  AuthMe,
+  Captcha,
+  GetUsersType,
+  Photos,
+  ResponseType,
+} from "./apiTypes";
 
 const instance = axios.create({
   withCredentials: true,
@@ -15,35 +23,26 @@ export enum StatusCode {
   CaptchaIsRequired = 10,
 }
 
-type AuthMe = {
-  data: { id: number; email: string; login: string };
-  resultCode: StatusCode;
-  messages: Array<string>;
-};
-type AuthLogin = {
-  data: { id: number };
-  resultCode: StatusCode;
-  messages: Array<string>;
-};
-
 export const usersAPI = {
   getUsers(currentPage = 1, pageSize = 4) {
     return instance
-      .get(`users?page=${currentPage}&count=${pageSize}`)
+      .get<GetUsersType>(`users?page=${currentPage}&count=${pageSize}`)
       .then((response) => response.data);
   },
   followDelete(id: number) {
-    return instance.delete(`follow/${id}`);
+    return instance
+      .delete<ResponseType>(`follow/${id}`)
+      .then((response) => response.data);
   },
   followPost(id: number) {
-    return instance.post(`follow/${id}`);
+    return instance
+      .post<ResponseType>(`follow/${id}`)
+      .then((response) => response.data);
   },
   getAuth() {
-    return instance.get<AuthMe>(`auth/me`).then((response) => response.data);
-  },
-  setProfile(profileId: number) {
-    console.warn("old version");
-    return profileAPI.setProfile(profileId);
+    return instance
+      .get<ResponseType<AuthMe>>(`auth/me`)
+      .then((response) => response.data);
   },
   loginPost(
     email: string,
@@ -52,7 +51,7 @@ export const usersAPI = {
     captcha: string | null = null
   ) {
     return instance
-      .post<AuthLogin>(`auth/login`, {
+      .post<ResponseType<AuthLogin>>(`auth/login`, {
         email,
         password,
         rememberMe,
@@ -61,33 +60,47 @@ export const usersAPI = {
       .then((response) => response.data);
   },
   logoutDelete() {
-    return instance.delete(`auth/login`);
+    return instance
+      .delete<ResponseType>(`auth/login`)
+      .then((response) => response.data);
   },
   getCaptcha() {
-    return instance.get(`security/get-captcha-url`);
+    return instance
+      .get<Captcha>(`security/get-captcha-url`)
+      .then((response) => response.data);
   },
 };
 
 export const profileAPI = {
   setProfile(profileId: number) {
-    return instance.get(`profile/${profileId}`);
+    return instance
+      .get<ProfileType>(`profile/${profileId}`)
+      .then((response) => response.data);
   },
   getStatus(userId: number) {
-    return instance.get(`profile/status/${userId}`);
+    return instance
+      .get<string>(`profile/status/${userId}`)
+      .then((response) => response.data);
   },
   updateStatus(status: string) {
-    return instance.put(`profile/status/`, { status: status });
+    return instance
+      .put<ResponseType>(`profile/status/`, { status: status })
+      .then((response) => response.data);
   },
   setPhoto(photoFile: any) {
     const formData = new FormData();
     formData.append("image", photoFile);
-    return instance.put(`profile/photo`, formData, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    });
+    return instance
+      .put<ResponseType<Photos>>(`profile/photo`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      })
+      .then((response) => response.data);
   },
   updateProfile(profile: ProfileType) {
-    return instance.put("/profile", profile);
+    return instance
+      .put<ResponseType>("/profile", profile)
+      .then((response) => response.data);
   },
 };
