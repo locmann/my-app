@@ -7,13 +7,13 @@ import {
   unfollowThunk,
 } from "../../redux/usersReducer";
 import Users from "./Users";
-import Preloader from "../common/Preloader.jsx";
+import Preloader from "../common/Preloader";
 import { compose } from "redux";
 import { withAuthRedirect } from "../../hoc/withAuthRedirect.js";
 import { UserType } from "../types/types";
 import { AppStateType } from "../../redux/reduxStore";
 
-type PropsType = MapStateToPropsType & MapDispatchToPropsType & OwnType;
+type PropsType = MapStateToPropsType & MapDispatchToPropsType;
 
 type MapStateToPropsType = {
   currentPage: number;
@@ -32,9 +32,9 @@ type MapDispatchToPropsType = {
   getUsersOnChangedPage: (pageNumber: number, pageSize: number) => void;
 };
 
-type OwnType = {
+/* type OwnType = {
   title: string;
-};
+}; */
 
 class UsersContainer extends React.Component<PropsType> {
   componentDidMount() {
@@ -77,7 +77,7 @@ function mapStateToProps(state: AppStateType): MapStateToPropsType {
 }
 
 export default compose(
-  connect<MapStateToPropsType, MapDispatchToPropsType, OwnType, AppStateType>(
+  connect<MapStateToPropsType, MapDispatchToPropsType, {}, AppStateType>(
     mapStateToProps,
     {
       followThunk,

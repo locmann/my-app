@@ -2,11 +2,31 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import styles from "./Login.module.css";
 import { connect } from "react-redux";
-import { loginThunk } from "../../redux/authReducer.ts";
+import { loginThunk } from "../../redux/authReducer";
 import { Navigate } from "react-router-dom";
+import { AppStateType } from "../../redux/reduxStore";
 
-function Login(props) {
-  const onSubmit = (formData) => {
+type LoginProps = {
+  loginThunk: (
+    email: string,
+    password: string,
+    rememberMe: boolean,
+    captcha: string
+  ) => void;
+  isAuth: boolean | null;
+  error: string | null;
+  captcha: string | null;
+};
+
+type FormDataType = {
+  email: string;
+  password: string;
+  rememberMe: boolean;
+  captcha: string;
+};
+
+const Login: React.FC<LoginProps> = (props) => {
+  const onSubmit = (formData: FormDataType) => {
     props.loginThunk(
       formData.email,
       formData.password,
@@ -31,15 +51,21 @@ function Login(props) {
       )}
     </>
   );
-}
+};
 
-function LoginForm(props) {
+type LoginFormPropsType = {
+  onSubmit: (formData: FormDataType) => void;
+  er: string | null;
+  captcha: string | null;
+};
+
+function LoginForm(props: LoginFormPropsType) {
   const {
     register,
     handleSubmit,
     formState: { errors },
     reset,
-  } = useForm();
+  } = useForm<FormDataType>();
 
   return (
     <form onSubmit={handleSubmit(props.onSubmit)}>
@@ -63,7 +89,11 @@ function LoginForm(props) {
         <input type="checkbox" {...register("rememberMe")} /> Remember me
       </div>
 
-      {props.er.length > 0 && <div className={styles.err}>{props.er}</div>}
+      {
+        /* props.er.length > 0 */ props.er !== null && (
+          <div className={styles.err}>{props.er}</div>
+        )
+      }
       {props.captcha && <img src={props.captcha} />}
       {props.captcha && (
         <div>
@@ -75,7 +105,7 @@ function LoginForm(props) {
   );
 }
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = (state: AppStateType) => ({
   isAuth: state.auth.isAuth,
   error: state.auth.error,
   captcha: state.auth.captcha,

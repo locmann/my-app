@@ -2,12 +2,20 @@ import styles from "./Dialogs.module.css";
 import DialogItem from "./DialogItem/DialogItem";
 import Message from "./Message/Message";
 import React from "react";
-import { Controller, useForm } from "react-hook-form";
+import { Controller, SubmitHandler, useForm } from "react-hook-form";
+import { InitialStateType } from "../../redux/dialogsReducer";
 
-function Dialogs(props) {
-  let newMessage = React.createRef();
-  function addMessage(msg) {
-    props.addMessage(msg);
+type OwnPropsType = {
+  dialogs: InitialStateType;
+  addMessageActionCreator: (msg: string) => void;
+};
+type formValues = {
+  newMsg: string;
+};
+const Dialogs: React.FC<OwnPropsType> = (props) => {
+  debugger;
+  function addMessage(msg: string) {
+    props.addMessageActionCreator(msg);
   }
 
   let newDialogsData = props.dialogs.dialogs.map((mem) => (
@@ -24,8 +32,8 @@ function Dialogs(props) {
     reset,
     formState: { errors },
     control,
-  } = useForm();
-  const onSubmit = (data) => {
+  } = useForm<formValues>();
+  const onSubmit: SubmitHandler<formValues> = (data) => {
     console.log(data.newMsg);
     addMessage(data.newMsg);
     reset();
@@ -70,6 +78,6 @@ function Dialogs(props) {
       </div>
     </div>
   );
-}
+};
 
 export default Dialogs;

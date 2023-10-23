@@ -2,7 +2,13 @@ import React from "react";
 import styles from "./Header.module.css";
 import { NavLink } from "react-router-dom";
 
-function Header(props) {
+export type PropsType = {
+  isAuth: boolean | null;
+  login: string | null;
+  logoutThunk: () => void;
+};
+
+const Header: React.FC<PropsType> = (props) => {
   return (
     <header className={styles.app_header}>
       <img src="favicon.ico" />
@@ -18,6 +24,6 @@ function Header(props) {
       </div>
     </header>
   );
-}
+};
 
 export default Header;

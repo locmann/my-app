@@ -1,15 +1,28 @@
 import React from "react";
 import styles from "./MyPosts.module.css";
 import Post from "./Post/Post";
-import { Controller, useForm } from "react-hook-form";
+import { Controller, SubmitHandler, useForm } from "react-hook-form";
+import {
+  InitialStateType,
+  PostType as PostType,
+} from "../../../redux/profileReducer";
 
-function MyPosts(props) {
-  function addPost(text) {
+type formValues = {
+  newPostText: string;
+};
+
+type OwnPropsType = {
+  addPost: (text: string) => void;
+  profilePosts: InitialStateType;
+};
+
+function MyPosts(props: OwnPropsType) {
+  function addPost(text: string) {
     props.addPost(text);
   }
 
-  let newPost = props.profilePosts.posts.map((p) => (
-    <Post message={p.postMessage} likes={p.likes} />
+  let newPost = props.profilePosts.posts.map((p: PostType) => (
+    <Post id={p.id} postMessage={p.postMessage} likes={p.likes} />
   ));
 
   const {
@@ -17,8 +30,8 @@ function MyPosts(props) {
     reset,
     formState: { errors },
     control,
-  } = useForm();
-  const onSubmit = (data) => {
+  } = useForm<formValues>();
+  const onSubmit: SubmitHandler<formValues> = (data) => {
     addPost(data.newPostText);
     reset();
   };

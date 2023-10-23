@@ -3,7 +3,7 @@ import { ProfileType, PhotosType } from "../components/types/types";
 import { ThunkAction } from "redux-thunk";
 import { BaseThunkType, InferActionsTypes } from "./reduxStore";
 
-type Post = {
+export type PostType = {
   id: number;
   postMessage: string;
   likes: number;
@@ -13,7 +13,7 @@ let initialState = {
   posts: [
     { id: 1, postMessage: "hello", likes: 3 },
     { id: 2, postMessage: "hi", likes: 10 },
-  ] as Array<Post>,
+  ] as Array<PostType>,
   newPostText: "" as string,
   profile: null as ProfileType | null,
   status: "" as string,

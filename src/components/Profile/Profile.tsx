@@ -1,8 +1,18 @@
 import React from "react";
 import ProfileInfo from "./ProfileInfo/ProfileInfo";
 import MyPostsContainer from "./MyPosts/MyPostsContainer";
+import { ProfileType } from "../types/types";
 
-function Profile(props) {
+export type ProfileInfoPropsType = {
+  profile: ProfileType | null;
+  savePhoto: (file: File) => void;
+  status: string;
+  updateStatus: (status: string) => void;
+  isOwner: boolean;
+  updateUserProfile: (profile: ProfileType) => void;
+};
+
+const Profile: React.FC<ProfileInfoPropsType> = (props) => {
   return (
     <div>
       Content
@@ -17,6 +27,6 @@ function Profile(props) {
       <MyPostsContainer />
     </div>
   );
-}
+};
 
 export default Profile;

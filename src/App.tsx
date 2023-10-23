@@ -10,10 +10,16 @@ import Login from "./components/Login/Login";
 import { connect } from "react-redux";
 import { useParams } from "react-router-dom";
 import { compose } from "redux";
-import { initialize } from "./redux/appReducer.ts";
+import { initialize } from "./redux/appReducer";
 import Preloader from "./components/common/Preloader";
+import { AppStateType } from "./redux/reduxStore";
 
-class App extends React.Component {
+type MapPropsType = ReturnType<typeof mapStateToProps>;
+type DispatchPropsType = {
+  initialize: () => void;
+};
+
+class App extends React.Component<MapPropsType & DispatchPropsType> {
   componentDidMount() {
     //this.props.setFetchingPreloader(true)
     this.props.initialize();
@@ -21,7 +27,9 @@ class App extends React.Component {
   }
 
   render() {
-    if (!this.props.initialized) return <Preloader />;
+    if (!this.props.initialized) {
+      return <Preloader />;
+    }
 
     return (
       <BrowserRouter /* basename={process.env.PUBLIC_URL} */>
@@ -41,16 +49,22 @@ class App extends React.Component {
     );
   }
 }
-
-const withRouter = (Component) => {
-  const ComponentWithRouterProp = (props) => {
+export interface WithRouterProps {
+  params: Record<string, string>;
+}
+const withRouter = <Props extends WithRouterProps>(
+  Component: React.ComponentType<Props>
+) => {
+  const ComponentWithRouterProp = (
+    props: Omit<Props, keyof WithRouterProps>
+  ) => {
     let params = useParams();
-    return <Component {...props} router={{ params }} />;
+    return <Component {...(props as Props)} router={{ params }} />;
   };
   return ComponentWithRouterProp;
 };
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = (state: AppStateType) => ({
   initialized: state.app.initialized,
 });
 

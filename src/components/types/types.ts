@@ -5,9 +5,10 @@ export type ProfileType = {
   fullName: string;
   contacts: ContactsType;
   photos: PhotosType;
+  aboutMe?: string;
 };
 
-type ContactsType = {
+export type ContactsType = {
   github: string;
   vk: string;
   facebook: string;

@@ -1,9 +1,17 @@
 import React from "react";
-import { useForm } from "react-hook-form";
+import { SubmitHandler, UseFormRegister, useForm } from "react-hook-form";
 import styles from "./ProfileInfo.module.css";
 import { useSelector } from "react-redux";
+import { ContactsType, ProfileType } from "../../types/types";
 
-export const ProfileDescriptionForm = ({
+type PropsType = {
+  profile: ProfileType;
+  goToEditMode: () => void;
+  updateUserProfile: (profile: ProfileType) => void;
+  err: string;
+};
+
+export const ProfileDescriptionForm: React.FC<PropsType> = ({
   profile,
   goToEditMode,
   updateUserProfile,
@@ -11,8 +19,10 @@ export const ProfileDescriptionForm = ({
 }) => {
   //const err = useSelector((state) => state.profilePosts.err);
   //console.log(er);
-  const { register, handleSubmit } = useForm();
-  const onSubmit = (data) => {
+  const { register, handleSubmit } = useForm<ProfileType>();
+  const onSubmit: SubmitHandler<ProfileType> = (data) => {
+    console.log(data);
+
     updateUserProfile(data);
     goToEditMode();
   };
@@ -48,11 +58,13 @@ export const ProfileDescriptionForm = ({
       </div>
       <b>Contacts:</b>
       {Object.keys(profile.contacts).map((key) => {
+        //console.log(key);
+
         return (
           <ContactsForm
             key={key}
             contactTitle={key}
-            contactValue={profile.contacts[key]}
+            contactValue={profile.contacts[key as keyof ContactsType]}
             register={register}
           />
         );
@@ -64,7 +76,19 @@ export const ProfileDescriptionForm = ({
   );
 };
 
-const ContactsForm = ({ contactTitle, register, contactValue }) => {
+type ContactsFormType = {
+  contactTitle: string;
+  register: any;
+  contactValue: string;
+};
+
+const ContactsForm: React.FC<ContactsFormType> = ({
+  contactTitle,
+  register,
+  contactValue,
+}) => {
+  //const { register } = useForm();
+
   return (
     <div className={styles.contact}>
       <b>{contactTitle}</b>:{" "}
