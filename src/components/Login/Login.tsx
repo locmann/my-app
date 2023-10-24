@@ -1,22 +1,10 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 import styles from "./Login.module.css";
-import { connect } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { loginThunk } from "../../redux/authReducer";
 import { Navigate } from "react-router-dom";
-import { AppStateType } from "../../redux/reduxStore";
-
-type LoginProps = {
-  loginThunk: (
-    email: string,
-    password: string,
-    rememberMe: boolean,
-    captcha: string
-  ) => void;
-  isAuth: boolean | null;
-  error: string | null;
-  captcha: string | null;
-};
+import { AppDispatch, AppStateType } from "../../redux/reduxStore";
 
 type FormDataType = {
   email: string;
@@ -25,28 +13,32 @@ type FormDataType = {
   captcha: string;
 };
 
-const Login: React.FC<LoginProps> = (props) => {
+export const Login: React.FC = () => {
+  const isAuth = useSelector((state: AppStateType) => state.auth.isAuth);
+  const error = useSelector((state: AppStateType) => state.auth.error);
+  const captcha = useSelector((state: AppStateType) => state.auth.captcha);
+
+  const dispatch: AppDispatch = useDispatch();
+
   const onSubmit = (formData: FormDataType) => {
-    props.loginThunk(
-      formData.email,
-      formData.password,
-      formData.rememberMe,
-      formData.captcha
+    dispatch(
+      loginThunk(
+        formData.email,
+        formData.password,
+        formData.rememberMe,
+        formData.captcha
+      )
     );
   };
 
   return (
     <>
-      {props.isAuth ? (
+      {isAuth ? (
         <Navigate to="/profile" />
       ) : (
         <>
           <h1>LOGIN</h1>
-          <LoginForm
-            onSubmit={onSubmit}
-            er={props.error}
-            captcha={props.captcha}
-          />
+          <LoginForm onSubmit={onSubmit} er={error} captcha={captcha} />
         </>
       )}
     </>
@@ -89,11 +81,7 @@ function LoginForm(props: LoginFormPropsType) {
         <input type="checkbox" {...register("rememberMe")} /> Remember me
       </div>
 
-      {
-        /* props.er.length > 0 */ props.er !== null && (
-          <div className={styles.err}>{props.er}</div>
-        )
-      }
+      {props.er !== null && <div className={styles.err}>{props.er}</div>}
       {props.captcha && <img src={props.captcha} />}
       {props.captcha && (
         <div>
@@ -104,11 +92,3 @@ function LoginForm(props: LoginFormPropsType) {
     </form>
   );
 }
-
-const mapStateToProps = (state: AppStateType) => ({
-  isAuth: state.auth.isAuth,
-  error: state.auth.error,
-  captcha: state.auth.captcha,
-});
-
-export default connect(mapStateToProps, { loginThunk })(Login);

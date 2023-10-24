@@ -1,38 +1,67 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styles from "./Users.module.css";
 import userPhoto from "../../assets/images/user.png";
 import { NavLink, Navigate } from "react-router-dom";
-import { UserType } from "../types/types";
 import UserSearch from "./UserSearch";
 import Paginator from "./Paginator";
-import { FilterType } from "../../redux/usersReducer";
+import {
+  FilterType,
+  followThunk,
+  getUsers,
+  getUsersOnChangedPage,
+  unfollowThunk,
+} from "../../redux/usersReducer";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  getCurrentPage,
+  getFilter,
+  getFollowingInProgress,
+  getIsAuth,
+  getPageSize,
+  getTotalUsersCount,
+  getUsersForSelector,
+} from "../../redux/userSelectors";
+import { AppDispatch } from "../../redux/reduxStore";
 
-type PropsType = {
-  totalUsersCount: number;
-  pageSize: number;
-  isAuth: boolean | null;
-  currentPage: number;
-  onPageChanged: (pageNumber: number) => void;
-  users: Array<UserType>;
-  unfollow: (userID: number) => void;
-  follow: (userID: number) => void;
-  followingInProgress: Array<number>;
-  onFilterChanged: (filter: FilterType) => void;
-};
+export const Users: React.FC = (props) => {
+  const totalUsersCount = useSelector(getTotalUsersCount);
+  const currentPage = useSelector(getCurrentPage);
+  const pageSize = useSelector(getPageSize);
+  const filter = useSelector(getFilter);
+  const users = useSelector(getUsersForSelector);
+  const isAuth = useSelector(getIsAuth);
+  const followingInProgress = useSelector(getFollowingInProgress);
 
-let Users: React.FC<PropsType> = (props) => {
-  if (!props.isAuth) return <Navigate to="/login" />;
+  const dispatch: AppDispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(getUsers(currentPage, pageSize, filter));
+  }, []);
+  const onPageChanged = (pageNumber: number) => {
+    dispatch(getUsersOnChangedPage(pageNumber, pageSize, filter));
+  };
+  const onFilterChanged = (filter: FilterType) => {
+    dispatch(getUsers(1, 4, filter));
+  };
+  const follow = (userID: number) => {
+    dispatch(followThunk(userID));
+  };
+  const unfollow = (userID: number) => {
+    dispatch(unfollowThunk(userID));
+  };
+  if (!isAuth) return <Navigate to="/login" />;
+
   return (
     <div>
       <Paginator
-        totalUsersCount={props.totalUsersCount}
-        pageSize={props.pageSize}
-        currentPage={props.currentPage}
-        onPageChanged={props.onPageChanged}
+        totalUsersCount={totalUsersCount}
+        pageSize={pageSize}
+        currentPage={currentPage}
+        onPageChanged={onPageChanged}
       />
-      <UserSearch onFilterChanged={props.onFilterChanged} />
+      <UserSearch onFilterChanged={onFilterChanged} />
       <div>
-        {props.users.map((u) => (
+        {users.map((u) => (
           <div>
             <span>
               <div>
@@ -46,22 +75,18 @@ let Users: React.FC<PropsType> = (props) => {
               <div>
                 {u.followed ? (
                   <button
-                    disabled={props.followingInProgress.some(
-                      (id) => id === u.id
-                    )}
+                    disabled={followingInProgress.some((id) => id === u.id)}
                     onClick={() => {
-                      props.unfollow(u.id);
+                      unfollow(u.id);
                     }}
                   >
                     unfollow
                   </button>
                 ) : (
                   <button
-                    disabled={props.followingInProgress.some(
-                      (id) => id === u.id
-                    )}
+                    disabled={followingInProgress.some((id) => id === u.id)}
                     onClick={() => {
-                      props.follow(u.id);
+                      follow(u.id);
                     }}
                   >
                     follow
@@ -81,5 +106,3 @@ let Users: React.FC<PropsType> = (props) => {
     </div>
   );
 };
-
-export default Users;
