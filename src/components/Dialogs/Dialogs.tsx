@@ -13,7 +13,6 @@ type formValues = {
   newMsg: string;
 };
 const Dialogs: React.FC<OwnPropsType> = (props) => {
-  debugger;
   function addMessage(msg: string) {
     props.addMessageActionCreator(msg);
   }
@@ -44,10 +43,6 @@ const Dialogs: React.FC<OwnPropsType> = (props) => {
       <div className={styles.dialogs_item}>{newDialogsData}</div>
       <div className={styles.messages}>{newMessages}</div>
       <div>
-        {/* <form onSubmit={handleSubmit(onSubmit)}>
-          <input type="textarea" {...register("newMsg")} />
-          <input value="Add message" type="submit" />
-        </form> */}
         <form onSubmit={handleSubmit(onSubmit)}>
           <Controller
             name="newMsg"

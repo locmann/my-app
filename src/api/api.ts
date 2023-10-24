@@ -24,9 +24,17 @@ export enum StatusCode {
 }
 
 export const usersAPI = {
-  getUsers(currentPage = 1, pageSize = 4) {
+  getUsers(
+    currentPage = 1,
+    pageSize = 4,
+    term: string = "",
+    friend: null | boolean = null
+  ) {
     return instance
-      .get<GetUsersType>(`users?page=${currentPage}&count=${pageSize}`)
+      .get<GetUsersType>(
+        `users?page=${currentPage}&count=${pageSize}&term=${term}` +
+          (friend === null ? "" : `&friend=${friend}`)
+      )
       .then((response) => response.data);
   },
   followDelete(id: number) {

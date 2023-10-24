@@ -5,6 +5,8 @@ import {
   getUsersOnChangedPage,
   followThunk,
   unfollowThunk,
+  getUsersSearch,
+  FilterType,
 } from "../../redux/usersReducer";
 import Users from "./Users";
 import Preloader from "../common/Preloader";
@@ -23,27 +25,39 @@ type MapStateToPropsType = {
   users: Array<UserType>;
   followingInProgress: Array<number>;
   isAuth: boolean | null;
+  filter: FilterType;
 };
 
 type MapDispatchToPropsType = {
   unfollowThunk: (userID: number) => void;
   followThunk: (userID: number) => void;
-  getUsers: (currentPage: number, pageSize: number) => void;
-  getUsersOnChangedPage: (pageNumber: number, pageSize: number) => void;
+  getUsers: (currentPage: number, pageSize: number, filter: FilterType) => void;
+  getUsersOnChangedPage: (
+    pageNumber: number,
+    pageSize: number,
+    filter: FilterType
+  ) => void;
 };
-
-/* type OwnType = {
-  title: string;
-}; */
 
 class UsersContainer extends React.Component<PropsType> {
   componentDidMount() {
-    this.props.getUsers(this.props.currentPage, this.props.pageSize);
+    const { currentPage, pageSize, filter } = this.props;
+    console.log(getUsers);
+    this.props.getUsers(currentPage, pageSize, filter);
   }
 
   onPageChanged(pageNumber: number) {
-    this.props.getUsersOnChangedPage(pageNumber, this.props.pageSize);
+    this.props.getUsersOnChangedPage(
+      pageNumber,
+      this.props.pageSize,
+      this.props.filter
+    );
   }
+  onFilterChanged(filter: FilterType) {
+    debugger;
+    this.props.getUsers(1, 4, filter);
+  }
+
   render() {
     return (
       <>
@@ -58,6 +72,7 @@ class UsersContainer extends React.Component<PropsType> {
           follow={this.props.followThunk}
           followingInProgress={this.props.followingInProgress}
           isAuth={this.props.isAuth}
+          onFilterChanged={this.onFilterChanged.bind(this)}
         />
       </>
     );
@@ -73,6 +88,7 @@ function mapStateToProps(state: AppStateType): MapStateToPropsType {
     isFetching: state.usersPage.isFetching,
     followingInProgress: state.usersPage.followingInProgress,
     isAuth: state.auth.isAuth,
+    filter: state.usersPage.filter,
   };
 }
 
@@ -82,12 +98,9 @@ export default compose(
     {
       followThunk,
       unfollowThunk,
-      /* setUsers,
-      setCurPage,
-      setTotalUsersCount, */
       getUsers,
       getUsersOnChangedPage,
+      //getUsersSearch,
     }
   )
-  //withAuthRedirect
 )(UsersContainer);

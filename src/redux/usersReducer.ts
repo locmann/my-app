@@ -11,6 +11,10 @@ let initialState = {
   currentPage: 1,
   isFetching: false,
   followingInProgress: [] as Array<number>,
+  filter: {
+    term: "",
+    friend: null as null | boolean,
+  },
 };
 
 function usersReducer(
@@ -64,6 +68,12 @@ function usersReducer(
         isFetching: action.isFetching,
       };
     }
+    case "SET_FILTER": {
+      return {
+        ...state,
+        filter: action.payload,
+      };
+    }
     case "TOGGLE_IS_FOLLOWING_PROGRESS": {
       return {
         ...state,
@@ -90,6 +100,10 @@ export const actions = {
     return { type: "SET_USERS", users } as const;
   },
 
+  setFilter(filter: FilterType) {
+    return { type: "SET_FILTER", payload: filter } as const;
+  },
+
   setCurPage(currentPage: number) {
     return { type: "SET_CURRENT_PAGE", currentPage } as const;
   },
@@ -111,27 +125,59 @@ export const actions = {
   },
 };
 
-export function getUsers(currentPage: number, pageSize: number): ThunkType {
+export function getUsers(
+  currentPage: number,
+  pageSize: number,
+  filter: FilterType
+): ThunkType {
   return (dispatch) => {
     dispatch(actions.setFetchingPreloader(true));
-    usersAPI.getUsers(currentPage, pageSize).then((data) => {
-      dispatch(actions.setUsers(data.items));
-      dispatch(actions.setTotalUsersCount(data.totalCount));
-      dispatch(actions.setFetchingPreloader(false));
-    });
+
+    dispatch(actions.setCurPage(currentPage));
+    dispatch(actions.setFilter(filter));
+
+    usersAPI
+      .getUsers(currentPage, pageSize, filter.term, filter.friend)
+      .then((data) => {
+        dispatch(actions.setFetchingPreloader(false));
+        dispatch(actions.setUsers(data.items));
+        dispatch(actions.setTotalUsersCount(data.totalCount));
+      });
   };
 }
 
 export function getUsersOnChangedPage(
   pageNumber: number,
-  pageSize: number
+  pageSize: number,
+  filter: FilterType
 ): ThunkType {
   return (dispatch) => {
     dispatch(actions.setFetchingPreloader(true));
     dispatch(actions.setCurPage(pageNumber));
-    usersAPI.getUsers(pageNumber, pageSize).then((data) => {
-      dispatch(actions.setFetchingPreloader(false));
+    usersAPI
+      .getUsers(pageNumber, pageSize, filter.term, filter.friend)
+      .then((data) => {
+        dispatch(actions.setFetchingPreloader(false));
+        dispatch(actions.setUsers(data.items));
+      });
+  };
+}
+
+export function getUsersSearch(
+  currentPage: number,
+  pageSize: number,
+  filter: FilterType
+): ThunkType {
+  return (dispatch) => {
+    console.log("1ew");
+
+    dispatch(actions.setFetchingPreloader(true));
+    dispatch(actions.setFilter(filter));
+    dispatch(actions.setCurPage(currentPage));
+    usersAPI.getUsers(currentPage, pageSize, filter.term).then((data) => {
       dispatch(actions.setUsers(data.items));
+      dispatch(actions.setTotalUsersCount(data.totalCount));
+      dispatch(actions.setFetchingPreloader(false));
     });
   };
 }
@@ -163,5 +209,6 @@ export function unfollowThunk(userId: number): ThunkType {
 export default usersReducer;
 
 export type InitialStateType = typeof initialState;
+export type FilterType = typeof initialState.filter;
 type ActionsTypes = InferActionsTypes<typeof actions>;
 type ThunkType = BaseThunkType<ActionsTypes>;

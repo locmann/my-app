@@ -3,6 +3,9 @@ import styles from "./Users.module.css";
 import userPhoto from "../../assets/images/user.png";
 import { NavLink, Navigate } from "react-router-dom";
 import { UserType } from "../types/types";
+import UserSearch from "./UserSearch";
+import Paginator from "./Paginator";
+import { FilterType } from "../../redux/usersReducer";
 
 type PropsType = {
   totalUsersCount: number;
@@ -14,47 +17,20 @@ type PropsType = {
   unfollow: (userID: number) => void;
   follow: (userID: number) => void;
   followingInProgress: Array<number>;
+  onFilterChanged: (filter: FilterType) => void;
 };
 
 let Users: React.FC<PropsType> = (props) => {
-  let pagesCount = Math.ceil(props.totalUsersCount / props.pageSize);
-  let pages = [];
-  for (let i = 1; i <= pagesCount; i++) {
-    pages.push(i);
-  }
-  console.log(props.isAuth);
   if (!props.isAuth) return <Navigate to="/login" />;
   return (
     <div>
-      <div>
-        {pages.map((p) => {
-          if (
-            p === 1 ||
-            p === pagesCount ||
-            (p >= props.currentPage - 2 && p <= props.currentPage + 2)
-          ) {
-            return (
-              <span
-                key={p}
-                className={props.currentPage === p ? styles.selectedPage : ""}
-                onClick={() => {
-                  props.onPageChanged(p);
-                }}
-              >
-                {p}{" "}
-              </span>
-            );
-          } else if (
-            p === props.currentPage - 3 ||
-            p === props.currentPage + 3
-          ) {
-            return <span key={p}>... </span>;
-          } else {
-            return null;
-          }
-        })}
-      </div>
-
+      <Paginator
+        totalUsersCount={props.totalUsersCount}
+        pageSize={props.pageSize}
+        currentPage={props.currentPage}
+        onPageChanged={props.onPageChanged}
+      />
+      <UserSearch onFilterChanged={props.onFilterChanged} />
       <div>
         {props.users.map((u) => (
           <div>
