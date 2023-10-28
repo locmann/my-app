@@ -1,7 +1,13 @@
 import React, { useEffect } from "react";
 import styles from "./Users.module.css";
 import userPhoto from "../../assets/images/user.png";
-import { NavLink, Navigate } from "react-router-dom";
+import {
+  NavLink,
+  Navigate,
+  useNavigate,
+  useSearchParams,
+  useLocation,
+} from "react-router-dom";
 import UserSearch from "./UserSearch";
 import Paginator from "./Paginator";
 import {
@@ -31,12 +37,45 @@ export const Users: React.FC = (props) => {
   const users = useSelector(getUsersForSelector);
   const isAuth = useSelector(getIsAuth);
   const followingInProgress = useSelector(getFollowingInProgress);
-
+  const nav = useNavigate();
   const dispatch: AppDispatch = useDispatch();
+  const location = useLocation();
+  const [searchParams] = useSearchParams(location.search.substring(1));
+  useEffect(() => {
+    console.log(location);
+    console.log(searchParams);
+    let parsed = Object.fromEntries([...searchParams]);
+    console.log(parsed);
+    let actualPage = currentPage;
+    let actualFilter = filter;
+    if (!!parsed.page) actualPage = Number(parsed.page);
+    if (!!parsed.term)
+      actualFilter = { ...actualFilter, term: parsed.term as string };
+    switch (parsed.friend) {
+      case "null":
+        actualFilter = { ...actualFilter, friend: null };
+        break;
+      case "true":
+        actualFilter = { ...actualFilter, friend: true };
+        break;
+      case "false":
+        actualFilter = { ...actualFilter, friend: false };
+        break;
+    }
+
+    dispatch(getUsers(actualPage, pageSize, actualFilter));
+  }, []);
 
   useEffect(() => {
-    dispatch(getUsers(currentPage, pageSize, filter));
-  }, []);
+    const uriObj: any = {};
+    if (!!filter.term) uriObj.term = filter.term;
+    if (filter.friend !== null) uriObj.friend = String(filter.friend);
+    uriObj.page = currentPage;
+    uriObj.count = pageSize;
+    const uriSTR = new URLSearchParams(uriObj);
+    nav(`/users?${uriSTR}`);
+  }, [filter, currentPage]);
+
   const onPageChanged = (pageNumber: number) => {
     dispatch(getUsersOnChangedPage(pageNumber, pageSize, filter));
   };

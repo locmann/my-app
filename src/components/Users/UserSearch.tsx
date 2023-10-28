@@ -15,7 +15,6 @@ const UserSearch: React.FC<PropsType> = (props) => {
     register,
     handleSubmit,
     formState: { errors },
-    reset,
   } = useForm<formValues>();
   const onSubmit: SubmitHandler<formValues> = (data) => {
     let friend = null;
@@ -34,9 +33,7 @@ const UserSearch: React.FC<PropsType> = (props) => {
       term: data.request,
       friend: friend,
     };
-    //debugger;
     props.onFilterChanged(tmp);
-    reset();
   };
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
