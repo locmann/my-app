@@ -23,6 +23,7 @@ import { Avatar, Breadcrumb, Col, Layout, Menu, Row, theme } from "antd";
 import MenuItem from "antd/es/menu/MenuItem";
 import SubMenu from "antd/es/menu/SubMenu";
 import Header from "./components/Header/Header";
+import { ChatPage } from "./pages/Chat/ChatPage";
 
 const { Content, Sider } = Layout;
 
@@ -78,6 +79,9 @@ class App extends React.Component<MapPropsType & DispatchPropsType> {
                   <MenuItem key="6">
                     <NavLink to="/users">Users</NavLink>
                   </MenuItem>
+                  <MenuItem key="7">
+                    <NavLink to="/chat">Chat</NavLink>
+                  </MenuItem>
                 </SubMenu>
               </Menu>
             </Sider>
@@ -103,6 +107,7 @@ class App extends React.Component<MapPropsType & DispatchPropsType> {
                   />
                   <Route path="/users" element={<UserPage />} />
                   <Route path="/login" element={<Login />} />
+                  <Route path="/chat" element={<ChatPage />} />
                 </Routes>
               </Content>
             </Layout>
